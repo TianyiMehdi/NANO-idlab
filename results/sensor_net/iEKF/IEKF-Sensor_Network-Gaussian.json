@@ -1,0 +1,19 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Sensor_Network",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 150,
+    "x_rmse": [
+        0.19011647744663787,
+        0.5428444195164286,
+        0.19352280229188626,
+        0.32846340148289926
+    ],
+    "time": 0.002354882099484437
+}

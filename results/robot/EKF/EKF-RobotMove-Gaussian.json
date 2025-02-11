@@ -1,0 +1,17 @@
+{
+    "filter_name": "EKF",
+    "model_name": "RobotMove",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.09369060528563349,
+        0.08833045385920907
+    ],
+    "time": 0.001729755401611328
+}

@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Oscillator",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.7124302623288571,
+        0.7001846408132643
+    ],
+    "time": 0.00022432177957862315
+}

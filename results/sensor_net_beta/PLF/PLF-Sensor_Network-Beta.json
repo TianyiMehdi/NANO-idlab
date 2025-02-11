@@ -1,0 +1,19 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Sensor_Network",
+    "noise_name": "Beta",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 45,
+    "steps": 150,
+    "x_rmse": [
+        0.26939419973379664,
+        0.6619072348778676,
+        0.2438306069924484,
+        0.36468744017676935
+    ],
+    "time": 0.0010972493802496608
+}

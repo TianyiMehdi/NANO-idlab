@@ -1,0 +1,19 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Sensor_Network",
+    "noise_name": "Beta",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 45,
+    "steps": 150,
+    "x_rmse": [
+        0.797517847034775,
+        0.987495242353867,
+        0.3720473697320149,
+        0.45107500541805706
+    ],
+    "time": 0.00020762225925522354
+}

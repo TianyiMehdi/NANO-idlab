@@ -1,0 +1,28 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Sensor_Network",
+    "noise_name": "Beta",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "n_iterations": 1,
+    "lr": 0.22,
+    "init_type": "iekf",
+    "derivate_type": "stein",
+    "iekf_max_iter": 1,
+    "loss_type": "log_likelihood_loss",
+    "delta": 5,
+    "c": 5,
+    "beta": 0.02,
+    "N_exp": 45,
+    "steps": 150,
+    "x_rmse": [
+        0.25338410079253926,
+        0.4420766318479275,
+        0.20532239882810116,
+        0.2748922033843746
+    ],
+    "time": 0.002004319104927854
+}

@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Oscillator",
+    "noise_name": "Beta",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.11144458047171062,
+        0.11140103591395448
+    ],
+    "time": 0.00022659056114427974
+}

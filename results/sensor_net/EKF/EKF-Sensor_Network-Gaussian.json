@@ -1,0 +1,19 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Sensor_Network",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 150,
+    "x_rmse": [
+        0.1922276156551016,
+        0.5560250694795811,
+        0.19715030652410498,
+        0.3324620971163435
+    ],
+    "time": 0.0007938026261809688
+}

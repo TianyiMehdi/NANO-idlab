@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "RobotMove",
+    "noise_name": "Laplace",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.0850830972816403,
+        0.072275787704804
+    ],
+    "time": 0.0008208926518758138
+}

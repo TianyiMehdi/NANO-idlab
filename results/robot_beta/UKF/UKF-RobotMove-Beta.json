@@ -1,0 +1,17 @@
+{
+    "filter_name": "UKF",
+    "model_name": "RobotMove",
+    "noise_name": "Beta",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.15761786923572724,
+        0.14319677711483014
+    ],
+    "time": 0.0002852056002376055
+}

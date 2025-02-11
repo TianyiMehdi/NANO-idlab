@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "SinCos",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        1.3955427129367766,
+        1.3967074868432132
+    ],
+    "time": 0.0013824139647747402
+}

@@ -1,0 +1,17 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Vehicle",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 100,
+    "steps": 50,
+    "x_rmse": [
+        0.0771231402687444,
+        0.167699792131027
+    ],
+    "time": 0.0007848243810692609
+}

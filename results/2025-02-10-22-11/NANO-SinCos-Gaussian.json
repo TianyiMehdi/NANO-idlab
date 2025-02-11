@@ -1,0 +1,26 @@
+{
+    "filter_name": "NANO",
+    "model_name": "SinCos",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "n_iterations": 1,
+    "lr": 0.1,
+    "init_type": "iekf",
+    "derivate_type": "stein",
+    "iekf_max_iter": 1,
+    "loss_type": "log_likelihood_loss",
+    "delta": 5,
+    "c": 5,
+    "beta": 0.02,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        1.0527851938964137,
+        1.035122803357654
+    ],
+    "time": 0.00047690032115533723
+}

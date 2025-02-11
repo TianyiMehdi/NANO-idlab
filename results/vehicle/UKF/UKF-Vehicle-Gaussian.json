@@ -1,0 +1,17 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Vehicle",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 100,
+    "steps": 50,
+    "x_rmse": [
+        0.06249158668369433,
+        0.10101507155163068
+    ],
+    "time": 0.00016632634766247808
+}

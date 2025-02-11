@@ -1,0 +1,18 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "RobotMove",
+    "noise_name": "Beta",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "max_iter": 2,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.16002423155748186,
+        0.13972690076294536
+    ],
+    "time": 0.0034548043241404524
+}

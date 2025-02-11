@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "RobotMove",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 50,
+    "steps": 100,
+    "x_rmse": [
+        0.09655575716364019,
+        0.08552710164082003
+    ],
+    "time": 0.0008100634391861732
+}

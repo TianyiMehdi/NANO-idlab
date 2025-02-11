@@ -1,0 +1,19 @@
+{
+    "filter_name": "UKF",
+    "model_name": "WienerVelocity",
+    "noise_name": "Gaussian",
+    "result_dir": null,
+    "outlier_type": "direct",
+    "random_seed": 42,
+    "state_outlier_flag": false,
+    "measurement_outlier_flag": false,
+    "N_exp": 100,
+    "steps": 150,
+    "x_rmse": [
+        0.4708292899425166,
+        0.46778497926188267,
+        0.8548914863404611,
+        0.8563532933176852
+    ],
+    "time": 0.0001053598903169568
+}
