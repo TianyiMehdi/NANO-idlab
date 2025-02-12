@@ -3,7 +3,7 @@ import autograd.numpy as np
 
 
 class EKF(ExtendedKalmanFilter):
-    def __init__(self, model):
+    def __init__(self, model, **filter_dict):
         super().__init__(dim_x=model.dim_x,
                          dim_z=model.dim_y,
                          )

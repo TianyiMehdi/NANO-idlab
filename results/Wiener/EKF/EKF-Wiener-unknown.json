@@ -1,0 +1,17 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Wiener",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.815288551553445,
+        0.7513785059201489,
+        2.4123346660620273,
+        2.206431623934329
+    ],
+    "time": 0.00010187920613504534,
+    "current_time": "2025-02-12-15-41"
+}

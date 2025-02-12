@@ -1,12 +1,6 @@
-import autograd.numpy as np
-
 class Model:
 
-    def __init__(self, state_outlier_flag=False, 
-                measurement_outlier_flag=False, noise_type='Gaussian'):
-
-        self.state_outlier_flag = state_outlier_flag
-        self.measurement_outlier_flag = measurement_outlier_flag
+    def __init__(self, noise_type='Gaussian'):
         self.noise_type = noise_type
     
     def f(self, x, u=None):

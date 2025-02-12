@@ -1,0 +1,15 @@
+{
+    "filter_name": "UKF",
+    "model_name": "SinCos",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        1.5162294854950829,
+        1.626341938887727
+    ],
+    "time": 0.0009355687376242787,
+    "current_time": "2025-02-12-15-56"
+}

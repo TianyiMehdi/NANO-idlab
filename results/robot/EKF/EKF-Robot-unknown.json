@@ -1,0 +1,15 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Robot",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        8.148028248642271,
+        3.9570417842013033
+    ],
+    "time": 0.0014202983175689854,
+    "current_time": "2025-02-12-16-12"
+}

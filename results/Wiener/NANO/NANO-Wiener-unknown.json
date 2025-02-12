@@ -1,0 +1,20 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Wiener",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.8152885515534447,
+        0.7513785059201489,
+        2.412334666062026,
+        2.206431623934331
+    ],
+    "time": 0.0023763284012300883,
+    "n_iterations": 1,
+    "lr": 1,
+    "init_type": "prior",
+    "current_time": "2025-02-12-15-38"
+}
