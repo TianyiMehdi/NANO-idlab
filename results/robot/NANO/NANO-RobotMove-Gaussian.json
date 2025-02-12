@@ -8,7 +8,7 @@
     "state_outlier_flag": false,
     "measurement_outlier_flag": false,
     "n_iterations": 1,
-    "lr": 0.3,
+    "lr": 0.1,
     "init_type": "iekf",
     "derivate_type": "stein",
     "iekf_max_iter": 1,
@@ -17,10 +17,10 @@
     "c": 10,
     "beta": 0.005,
     "N_exp": 50,
-    "steps": 100,
+    "steps": 200,
     "x_rmse": [
-        0.0720330002731608,
-        0.06715670450733904
+        7.598828230123978,
+        3.674425347057623
     ],
-    "time": 0.0035958479871653548
+    "time": 0.0028409953333025594
 }

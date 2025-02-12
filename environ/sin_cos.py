@@ -75,5 +75,11 @@ class SinCos(Model):
     def jac_f(self, x_hat, u=0):
         return jacobian(lambda x: self.f(x))(x_hat)
     
-    def jac_h(self, x_hat, u=0):
-        return jacobian(lambda x: self.h(x))(x_hat)
+    # def jac_h(self, x_hat, u=0):
+    #     return jacobian(lambda x: self.h(x))(x_hat)
+    
+    def jac_h(self, x_hat):
+        return np.array([
+            [1 + cos(x_hat[0]), 0],
+            [0, 1 + cos(x_hat[1])]
+        ])

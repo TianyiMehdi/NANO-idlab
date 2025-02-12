@@ -41,8 +41,10 @@ class NANO:
 
         self.n_iterations = n_iterations
         # 1e-3    2    0 / 3 - n
-        # self.points = MerweScaledSigmaPoints(self.dim_x, alpha=0.1, beta=2.0, kappa=1.0)
-        self.points = MerweScaledSigmaPoints(self.dim_x, alpha=1e-3, beta=2.0, kappa=0)
+        # 原来：alpha=0.1, beta=2.0, kappa=1.0
+        # self.points = MerweScaledSigmaPoints(self.dim_x, alpha=1e-3, beta=2.0, kappa=0)
+        # self.points = MerweScaledSigmaPoints(self.dim_x, alpha=1e-3, beta=2.0, kappa=0)
+        self.points = JulierSigmaPoints(self.dim_x, kappa=0)
         self.x_prior = model.x0
         self.P_prior = model.P0
         self.x_post = model.x0
@@ -150,6 +152,22 @@ class NANO:
         P_posterior_inv = np.linalg.inv(P_posterior)
         
         return x_hat_posterior, P_posterior_inv
+
+    # def update_ukf_init(self, y, x_prior, P_prior):
+    #     x = x_prior
+    #     P = P_prior
+    #     sigmas_h = []
+    #     for s in self.sigmas_f:
+    #         sigmas_h.append(self.h(s))
+    #     sigmas_h = np.atleast_2d(sigmas_h)
+    #     zp, S = UT(sigmas_h, self.points.Wm, self.points.Wc, self.R, self.z_mean, self.residual_z)
+    #     SI = np.linalg.inv(S)
+    #     Pxz = self.cross_variance(x, zp, self.sigmas_f, sigmas_h)
+    #     K = np.dot(Pxz, SI)        # Kalman gain
+    #     self.y = self.residual_z(y, zp)   # residual
+
+    #     self.x = self.x + np.dot(self.K, self.y)
+    #     self.P = self.P - np.dot(self.K, np.dot(self.S, self.K.T))
     
     def predict(self, u=0):
         sigmas = self.points.sigma_points(self.x, self.P)
@@ -165,7 +183,7 @@ class NANO:
         self.x_prior = self.x.copy()
         self.P_prior = self.P.copy()
     
-    def update(self, y, lr = None, n_iterations = None):
+    def update(self, y, x_init=None, P_init=None, lr = None, n_iterations = None):
         if lr == None:
             lr = self.lr
         if n_iterations is None:
@@ -174,12 +192,15 @@ class NANO:
         # Initialize the first iteration step
         x_hat_prior = self.x.copy()
         P_inv_prior = np.linalg.inv(self.P).copy()
-        if self.init_type == 'prior':
-            x_hat, P_inv = x_hat_prior, P_inv_prior
-        elif self.init_type == 'laplace':
-            x_hat, P_inv = self.update_init(y, x_hat_prior, self.P.copy())
-        else: # self.init_type == 'iekf'
-            x_hat, P_inv = self.update_iekf_init(y, x_hat_prior, self.P.copy(), self.iekf_max_iter)
+        if x_init is not None:
+            x_hat, P_inv = x_init, np.linalg.inv(P_init)
+        else:
+            if self.init_type == 'prior':
+                x_hat, P_inv = x_hat_prior, P_inv_prior
+            elif self.init_type == 'laplace':
+                x_hat, P_inv = self.update_init(y, x_hat_prior, self.P.copy())
+            else: # self.init_type == 'iekf'
+                x_hat, P_inv = self.update_iekf_init(y, x_hat_prior, self.P.copy(), self.iekf_max_iter)
         
         is_positive_semidefinite(P_inv)
 
@@ -189,14 +210,17 @@ class NANO:
 
             # TODO: 雅可比平方近似hessian
             if self.derivate_type == 'stein':
-                # E_hessian = cal_mean(lambda x: self.loss_func_hessian_diff(x, y), x_hat, P, self.points)
-                # E_hessian = P_inv @ cal_mean(lambda x: np.outer(x-x_hat, x-x_hat)*self.loss_func(x,y), x_hat, P, self.points) @ P_inv \
+                # E_hessian_d = cal_mean(lambda x: self.loss_func_hessian_diff(x, y), x_hat, P, self.points)
+                # E_hessian_s = P_inv @ cal_mean(lambda x: np.outer(x-x_hat, x-x_hat)*self.loss_func(x,y), x_hat, P, self.points) @ P_inv \
                 #              - cal_mean(lambda x: self.loss_func(x, y), x_hat, P, self.points) * P_inv
-                E_hessian = P_inv @ cal_mean(lambda x: np.outer(x-x_hat, x-x_hat)*self.loss_func(x,y), x_hat, P, self.points) @ P_inv 
-                # print(E_hessian, E_hessian_s)
-                # print("------")
+                E_hessian = cal_mean(lambda x : self.jac_h(x).T @ np.linalg.inv(self.R) @ self.jac_h(x), x_hat, P, self.points)
+                # E_hessian = P_inv @ cal_mean(lambda x: np.outer(x-x_hat, x-x_hat)*self.loss_func(x,y), x_hat, P, self.points) @ P_inv 
+                # print("Direct Hessian: ", E_hessian_d)
+                # print("Now Hessian:", E_hessian)
+                # print("--------------")
                 P_inv_next = P_inv_prior + lr * E_hessian
-                is_positive_semidefinite(P_inv_next)
+                # 计算 P_inv_next 的特征值
+                # is_positive_semidefinite(P_inv_next)
                 P_next = np.linalg.inv(P_inv_next)
                 x_hat_next = x_hat - lr*(P_next @ P_inv @ cal_mean(lambda x: (x - x_hat) * self.loss_func(x, y), x_hat, P, self.points) + P_next @ P_inv_prior @ (x_hat - x_hat_prior))
 

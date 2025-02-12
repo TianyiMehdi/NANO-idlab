@@ -21,7 +21,8 @@ class Air_Traffic(Model):
         self.dim_x = 5
         self.dim_y = 4
         self.P0 = np.diag(np.array([5, 5, 2e4, 10, 1e-7]))
-        self.x0 =  np.array([130, 25, -20, 1, -4*pi/180])
+        self.m0 = np.array([130, 25, -20, 1, -4*pi/180])
+        self.x0 = np.random.multivariate_normal(mean=self.m0, cov=self.P0)
 
         self.state_outlier_flag = state_outlier_flag
         self.measurement_outlier_flag = measurement_outlier_flag
@@ -38,12 +39,12 @@ class Air_Traffic(Model):
         ])
         self.obs_var = np.array([1000, (30*pi/180)**2, (30*pi/180)**2, 100])
         R1 = np.diag(np.array([1000, (30*pi/180)**2, (30*pi/180)**2, 100]))
-        R2 = np.diag(np.array([1000, (1e-3*pi/180)**2, (30*pi/180)**2, 1e-4]))
+        R2 = np.diag(np.array([1000, (1e-3*pi/180)**2, (30*pi/180)**2, 1e-4]))*0.01
         # self.R = R1
         if noise_type == 'Beta':
             self.R = np.eye(self.dim_y) * (self.alpha * self.beta) / ((self.alpha + self.beta) ** 2 * (self.alpha + self.beta + 1))
         else:
-            self.R = R1
+            self.R = R2
 
     def f(self, x, u=None):
         tau = self.dt
@@ -98,6 +99,46 @@ class Air_Traffic(Model):
     def jac_f(self, x_hat, u=0):
         return jacobian(lambda x: self.f(x))(x_hat)
     
-    def jac_h(self, x_hat, u=0):
-        return jacobian(lambda x: self.h(x))(x_hat)
+    # def jac_h(self, x_hat, u=0):
+    #     return jacobian(lambda x: self.h(x))(x_hat)
+
+    def jac_h(self, x):
+        height = self.height
+        px, dpx, py, dpy, Delta = x
+        tmp1 = np.sqrt(px**2 + py ** 2 + height**2)
+        tmp2 = px**2 + py ** 2
+        tmp3 = (px**2 + py ** 2) ** (3/2) * (height**2/tmp2 + 1)
+        tmp4 = dpx*px + dpy*py
+        tmp5 = (px**2 + py ** 2 + height**2) ** (3/2)
+        return np.array([
+            [px / tmp1, 0, py / tmp1, 0, 0],
+            [-py / tmp2, 0, px / tmp2, 0, 0],
+            [-height*px / tmp3, 0, -height*py / tmp3, 0, 0],
+            [dpx/tmp1 - (px*tmp4)/tmp5, px/tmp1, dpy/tmp1 - (py*tmp4)/tmp5, py/tmp1, 0]
+        ])
+
+    # def jac_h(self, x, epsilon=5e-5):
+    #     """
+    #     使用差分法计算向量值函数的 Jacobian 矩阵
+    #     :param x: 输入向量
+    #     :param epsilon: 差分步长
+    #     :return: Jacobian 矩阵 (m x n)
+    #     """
+    #     n = len(x)  # 输入向量的维度
+    #     f = self.h  # 假设 loss_func 返回的是一个向量
+    #     m = len(f(x))  # 输出向量的维度
+    #     jacobian = np.zeros((m, n))  # 初始化 Jacobian 矩阵 (m x n)
+        
+    #     fx = f(x)  # 计算原始函数值
+        
+    #     for i in range(n):
+    #         x_i = x.copy()
+    #         x_i[i] += epsilon  # 对第 i 个元素增加 epsilon
+    #         fx_i = f(x_i)  # 计算 perturbed 输出
+            
+    #         # 计算 Jacobian 矩阵的每一列
+    #         for j in range(m):
+    #             jacobian[j, i] = (fx_i[j] - fx[j]) / epsilon
+        
+    #     return jacobian
         

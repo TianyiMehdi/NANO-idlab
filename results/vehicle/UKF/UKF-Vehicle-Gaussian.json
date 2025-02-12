@@ -7,11 +7,11 @@
     "random_seed": 42,
     "state_outlier_flag": false,
     "measurement_outlier_flag": false,
-    "N_exp": 100,
-    "steps": 50,
+    "N_exp": 50,
+    "steps": 200,
     "x_rmse": [
-        0.06249158668369433,
-        0.10101507155163068
+        0.5121314442560307,
+        0.17223574530588887
     ],
-    "time": 0.00016632634766247808
+    "time": 0.0001523922675818055
 }

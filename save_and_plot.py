@@ -68,9 +68,98 @@ def save_per_exp(data_dict, **args_dict):
     np.savez(os.path.join(data_dir, data_file_name), **data_dict)
 
     plot_state_error(data_dir, args_dict['filter_name'], **data_dict)
+    plot_state_rmse_error(data_dir, args_dict['filter_name'], **data_dict)
+    plot_state(data_dir, args_dict['filter_name'], **data_dict)
 
     return f"Files saved in directory: {data_dir}"
 
+
+def plot_state(data_dir, filter_name, **data_dict):
+    x_mc = data_dict['x_mc']
+    x_hat_mc = data_dict['x_hat_mc']
+    num_experiments, num_steps, num_states = x_mc.shape
+
+    # 使用 Seaborn 的样式
+    plt.style.use(f"{directory_path}/style.mpl")
+
+    # 对每个状态绘制 x_mc 和 x_hat_mc 的均值曲线
+    for state_index in range(num_states):
+        # 计算 x_mc 和 x_hat_mc 的均值和标准差
+        x_mc_mean = x_mc[:, :, state_index].mean(axis=0)
+        x_mc_std = x_mc[:, :, state_index].std(axis=0)
+        x_hat_mc_mean = x_hat_mc[:, :, state_index].mean(axis=0)
+        x_hat_mc_std = x_hat_mc[:, :, state_index].std(axis=0)
+
+        # 准备用于 Seaborn 绘图的数据
+        data = pd.DataFrame({
+            'Step': np.arange(num_steps),
+            'x_mc_mean': x_mc_mean,
+            'x_mc_std': x_mc_std,
+            'x_hat_mc_mean': x_hat_mc_mean,
+            'x_hat_mc_std': x_hat_mc_std
+        })
+
+        # 绘制均值曲线（带标准差）
+        plt.figure(figsize=(8, 6))
+        sns.lineplot(x='Step', y='x_mc_mean', data=data, label='True', ci=None)
+        sns.lineplot(x='Step', y='x_hat_mc_mean', data=data, label='Estimate', ci=None)
+
+        # 填充标准差区域
+        plt.fill_between(data['Step'], 
+                         data['x_mc_mean'] - data['x_mc_std'], 
+                         data['x_mc_mean'] + data['x_mc_std'], 
+                         color='blue', alpha=0.2)
+        plt.fill_between(data['Step'], 
+                         data['x_hat_mc_mean'] - data['x_hat_mc_std'], 
+                         data['x_hat_mc_mean'] + data['x_hat_mc_std'], 
+                         color='orange', alpha=0.2)
+
+        plt.xlabel("Step")
+        plt.ylabel(r'$x_{}$ Value'.format(state_index + 1))  # 使用 TeX 公式
+        plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
+        plt.xlim(0, num_steps - 1)
+
+        # 添加图例
+        plt.legend()
+
+        # 保存图像
+        plt.tight_layout()
+        plt.savefig(os.path.join(data_dir, f'{filter_name}_state_{state_index + 1}_comparison.png'))
+        plt.close()
+
+
+def plot_state_rmse_error(data_dir, filter_name, **data_dict):
+    x_mc = data_dict['x_mc']
+    x_hat_mc = data_dict['x_hat_mc']
+    num_experiments, num_steps, num_states = x_mc.shape
+
+    # 使用 Seaborn 的样式
+    plt.style.use(f"{directory_path}/style.mpl")
+
+    # 对每个状态绘制一个 RMSE 图
+    for state_index in range(num_states):
+        # 计算 RMSE
+        rmse = np.sqrt(np.mean((x_mc[:, :, state_index] - x_hat_mc[:, :, state_index])**2, axis=0))
+
+        # 准备用于 Seaborn 绘图的数据
+        data = pd.DataFrame({
+            'Step': np.arange(num_steps),
+            'RMSE': rmse
+        })
+
+        # 绘制 RMSE 曲线
+        plt.figure(figsize=(8, 6))
+        sns.lineplot(x='Step', y='RMSE', data=data)
+
+        plt.xlabel("Step")
+        plt.ylabel(f'$RMSE-x_{state_index + 1}$')  # 使用 TeX 公式表示RMSE
+        plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
+        plt.xlim(0, num_steps - 1)
+
+        # 保存图像
+        plt.tight_layout()
+        plt.savefig(os.path.join(data_dir, f'{filter_name}_state_{state_index + 1}_rmse.png'))
+        plt.close()
 
 def plot_state_error(data_dir, filter_name, **data_dict):
     x_mc = data_dict['x_mc']

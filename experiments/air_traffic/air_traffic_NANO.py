@@ -28,9 +28,10 @@ if __name__ == "__main__":
     parser.add_argument("--state_outlier_flag", default=False, type=bool, help="")
     parser.add_argument("--measurement_outlier_flag", default=False, type=bool, help="")
     
-    parser.add_argument("--n_iterations", default=1, type=int, help="Iterations for NANO")
-    parser.add_argument("--lr", default=0.1, type=float, help="Learning Rate for NANO")
-    parser.add_argument("--init_type", default='prior', type=str, help="Initialization type for Natural Gradient iteration")
+    # jac hessian : 2 2.0 iekf stein
+    parser.add_argument("--n_iterations", default=2, type=int, help="Iterations for NANO")
+    parser.add_argument("--lr", default=2.0, type=float, help="Learning Rate for NANO")
+    parser.add_argument("--init_type", default='iekf', type=str, help="Initialization type for Natural Gradient iteration")
     # init_type: 'prior', 'laplace', 'iekf'; usually 'prior' for linear and low nonlinearity system, 'iekf' for high nonlinearity system
     parser.add_argument("--derivate_type", default='stein', type=str, help="Derivate type for Natural Gradient iteration")
     # derivate_type: 'direct', 'stein'; 'direct' for linear and low nonlinearity system, 'stein' for high nonlinearity system
@@ -43,8 +44,8 @@ if __name__ == "__main__":
     parser.add_argument("--beta", default=2e-2, type=float, help="HyperParameter for beta divergence")
 
     # exp arguments
-    parser.add_argument("--N_exp", default=100, type=int, help="Number of the MC experiments")
-    parser.add_argument("--steps", default=50, type=int, help="Number of the steps in each trajectory")
+    parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
+    parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")
 
     # Parse the arguments
     args = parser.parse_args()
@@ -53,9 +54,6 @@ if __name__ == "__main__":
     np.random.seed(args_dict['random_seed'])
 
     lr = args_dict['lr']
-    model = Air_Traffic(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'],
-                        args_dict['noise_name'])
-    
 
     x_mc = []
     y_mc = []
@@ -65,6 +63,9 @@ if __name__ == "__main__":
     for _ in tqdm(range(args_dict['N_exp'])):
         x_list, y_list, x_hat_list = [], [], []
         run_time = []
+        model = Air_Traffic(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'],
+                        args_dict['noise_name'])
+        
         # initialize system
         x = model.x0
         y = model.h_withnoise(x)
@@ -72,10 +73,12 @@ if __name__ == "__main__":
         filter = NANO(model, loss_type=args_dict['loss_type'], init_type=args_dict['init_type'], 
                   derivate_type=args_dict['derivate_type'], iekf_max_iter=args_dict['iekf_max_iter'],
                   n_iterations=args_dict['n_iterations'], delta=args_dict['delta'], c=args_dict['c'], beta=args_dict['beta'])
-
+        # filter.x = np.array([128, 25, -20, 1, -4*np.pi/180])
+        # np.array([130, 25, -20, 1, -4*pi/180])
+        
         x_list.append(x)
         y_list.append(y)
-        x_hat_list.append(x)
+        x_hat_list.append(filter.x)
 
         for i in range(1, args_dict['steps']):
             # generate data

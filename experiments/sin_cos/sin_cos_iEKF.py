@@ -33,7 +33,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.filter_name == "IEKF":
-        parser.add_argument("--max_iter", default=2, type=float, help="Parameter for iEKF")
+        parser.add_argument("--max_iter", default=3, type=float, help="Parameter for iEKF")
     # exp arguments
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
     parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")

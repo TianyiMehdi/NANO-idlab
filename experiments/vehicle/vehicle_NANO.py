@@ -29,36 +29,30 @@ if __name__ == "__main__":
 
     # env arguments
     parser.add_argument("--state_outlier_flag", default=False, type=bool, help="")
-    parser.add_argument("--measurement_outlier_flag", default=True, type=bool, help="")
-    args = parser.parse_args()
+    parser.add_argument("--measurement_outlier_flag", default=False, type=bool, help="")
+    parser.add_argument("--n_iterations", default=1, type=int, help="Iterations for NANO")
+    parser.add_argument("--lr", default=0.1, type=float, help="Learning Rate for NANO")
+    parser.add_argument("--init_type", default='iekf', type=str, help="Initialization type for Natural Gradient iteration")
+    # init_type: 'prior', 'laplace', 'iekf'; usually 'prior' for linear and low nonlinearity system, 'iekf' for high nonlinearity system
+    parser.add_argument("--derivate_type", default='stein', type=str, help="Derivate type for Natural Gradient iteration")
+    # derivate_type: 'direct', 'stein'; 'direct' for linear and low nonlinearity system, 'stein' for high nonlinearity system
+    parser.add_argument("--iekf_max_iter", default=1, type=float, help="Iterations for iekf init")
 
-    if args.filter_name == "PF":
-        parser.add_argument("--N_particles", default=100, type=float, help="Parameter for PF")
-    
-    if args.filter_name == "NANO":
-        parser.add_argument("--n_iterations", default=1, type=float, help="Iterations for NANO")
-        parser.add_argument("--lr", default=1.0, type=float, help="Learning Rate for NANO")
-    
-    if args.measurement_outlier_flag == False:
-        parser.add_argument("--loss_type", default='log_likelihood_loss', type=str, help="Loss type for NANO")
-    else:
-        parser.add_argument("--loss_type", default='log_likelihood_loss', type=str, help="Loss type for NANO")
-        # parser.add_argument("--loss_type", default='pseudo_huber_loss', type=str, help="Loss type for NANO")
-        # parser.add_argument("--loss_type", default='weighted_log_likelihood_loss', type=str, help="Loss type for NANO")
-        # parser.add_argument("--loss_type", default='beta_likelihood_loss', type=str, help="Loss type for NANO")
+    parser.add_argument("--loss_type", default='log_likelihood_loss', type=str, help="Loss type for NANO")
+    # loss_type: 'log_likelihood_loss', 'pseudo_huber_loss', 'weighted_log_likelihood_loss', 'beta_likelihood_loss'
+    parser.add_argument("--delta", default=5, type=float, help="HyperParameter for Huber loss")
+    parser.add_argument("--c", default=5, type=float, help="HyperParameter for Weight loss")
+    parser.add_argument("--beta", default=2e-2, type=float, help="HyperParameter for beta divergence")
 
     # exp arguments
-    parser.add_argument("--N_exp", default=100, type=int, help="Number of the MC experiments")
-    parser.add_argument("--steps", default=50, type=int, help="Number of the steps in each trajectory")
+    parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
+    parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")
 
     # Parse the arguments
     args = parser.parse_args()
     args_dict = vars(args)
 
     np.random.seed(args_dict['random_seed'])
-
-    model = Vehicle(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'], 
-                    args_dict['noise_name'])
 
     x_mc = []
     y_mc = []
@@ -68,15 +62,23 @@ if __name__ == "__main__":
     for _ in tqdm(range(args_dict['N_exp'])):
         x_list, y_list, x_hat_list = [], [], []
         run_time = []
+        model = Vehicle(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'], 
+                    args_dict['noise_name'])
+        
         # initialize system
         x = model.x0
         y = model.h_withnoise(x)
 
-        filter = NANO(model, loss_type=args_dict['loss_type'], n_iterations=args_dict['n_iterations'])
+        filter = NANO(model, loss_type=args_dict['loss_type'], init_type=args_dict['init_type'], 
+                  derivate_type=args_dict['derivate_type'], iekf_max_iter=args_dict['iekf_max_iter'],
+                  n_iterations=args_dict['n_iterations'], delta=args_dict['delta'], c=args_dict['c'], beta=args_dict['beta'])
+        ukf = UKF(model)
+        filter.x = np.array([-2., -2.])
+        ukf.x = np.array([-2., -2.])
 
         x_list.append(x)
         y_list.append(y)
-        x_hat_list.append(x)
+        x_hat_list.append(filter.x)
 
         for i in range(1, args_dict['steps']):
             # generate data
@@ -87,8 +89,11 @@ if __name__ == "__main__":
 
             time1 = time.time()
             # perform filtering
+            # ukf.predict()
             filter.predict()
-            filter.update(y, lr=args_dict['lr'])
+            ukf.predict()
+            ukf.update(y)
+            filter.update(y, x_init=ukf.x, P_init=ukf.P, lr=args_dict['lr'])
             time2 = time.time()
             x_hat_list.append(filter.x)
             run_time.append(time2 - time1)

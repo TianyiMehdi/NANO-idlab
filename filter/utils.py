@@ -13,7 +13,10 @@ def is_positive_semidefinite(matrix):
         warnings.warn('Matrix is not positive semidefinite')
         
             
-def cal_mean(func, mean, var, points):
+def cal_mean(func, mean, var, points, type='mean'):
+    '''
+    type : 'mean'  'cov'
+    '''
     sigmas = points.sigma_points(mean, var)
     first_eval = func(sigmas[0])
     
@@ -24,11 +27,11 @@ def cal_mean(func, mean, var, points):
     
     for i, s in enumerate(sigmas):
         sigmas_func[i] = func(s)
-
-        # if isinstance(sigmas_func[i], np.ndarray) and sigmas_func[i].ndim == 2:
-        #     is_positive_semidefinite(sigmas_func[i])
     
-    mean_func = np.tensordot(points.Wm, sigmas_func, axes=([0], [0]))
+    if type == 'mean':
+        mean_func = np.tensordot(points.Wm, sigmas_func, axes=([0], [0]))
+    else:
+        mean_func = np.tensordot(points.Wc, sigmas_func, axes=([0], [0]))
     return mean_func
 
 def cal_mean_mc(func, mean, var, num_samples=10):

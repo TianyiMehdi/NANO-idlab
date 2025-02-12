@@ -18,8 +18,9 @@ class WienerVelocity(Model):
 
         self.dim_x = self.F.shape[0]
         self.dim_y = self.H.shape[0]
-        self.x0 = np.array([0., 0., 1., 1.])
+        self.m0 = np.array([0., 0., 1., 1.])
         self.P0 = np.eye(self.dim_x)
+        self.x0 = np.random.multivariate_normal(mean=self.m0, cov=self.P0)
 
         self.state_outlier_flag = state_outlier_flag
         self.measurement_outlier_flag = measurement_outlier_flag

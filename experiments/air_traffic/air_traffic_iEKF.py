@@ -39,18 +39,14 @@ if __name__ == "__main__":
         parser.add_argument("--max_iter", default=2, type=float, help="Parameter for iEKF")
 
     # exp arguments
-    parser.add_argument("--N_exp", default=100, type=int, help="Number of the MC experiments")
-    parser.add_argument("--steps", default=50, type=int, help="Number of the steps in each trajectory")
+    parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
+    parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")
 
     # Parse the arguments
     args = parser.parse_args()
     args_dict = vars(args)
 
     np.random.seed(args_dict['random_seed'])
-
-    model = Air_Traffic(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'],
-                        args_dict['noise_name'])
-    filter = IEKF(model, args_dict['max_iter'])
 
     x_mc = []
     y_mc = []
@@ -60,13 +56,17 @@ if __name__ == "__main__":
     for _ in tqdm(range(args_dict['N_exp'])):
         x_list, y_list, x_hat_list = [], [], []
         run_time = []
+        model = Air_Traffic(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'],
+                        args_dict['noise_name'])
         # initialize system
         x = model.x0
         y = model.h_withnoise(x)
 
+        filter = IEKF(model, args_dict['max_iter'])
+
         x_list.append(x)
         y_list.append(y)
-        x_hat_list.append(x)
+        x_hat_list.append(filter.x)
 
         for i in range(1, args_dict['steps']):
             # generate data

@@ -45,7 +45,7 @@ class Vehicle(Model):
         self.state_outlier_flag = state_outlier_flag
         self.measurement_outlier_flag = measurement_outlier_flag
         self.noise_type = noise_type
-        self.var = np.array([1e-2, 1e-2])
+        self.var = np.array([0.25, 0.01])
         self.obs_var = np.array([1e-2, 1e-2])
         self.Q = np.diag(self.var)
         self.R = np.diag(self.obs_var)
@@ -111,8 +111,30 @@ class Vehicle(Model):
     def jac_f(self, x_hat, u=0):
         return jacobian(lambda x: self.f(x))(x_hat)
     
-    def jac_h(self, x_hat):
-        return jacobian(lambda x: self.h(x))(x_hat)
+    def jac_h(self, x, epsilon=5e-5):
+        """
+        使用差分法计算向量值函数的 Jacobian 矩阵
+        :param x: 输入向量
+        :param epsilon: 差分步长
+        :return: Jacobian 矩阵 (m x n)
+        """
+        n = len(x)  # 输入向量的维度
+        f = self.h  # 假设 loss_func 返回的是一个向量
+        m = len(f(x))  # 输出向量的维度
+        jacobian = np.zeros((m, n))  # 初始化 Jacobian 矩阵 (m x n)
+        
+        fx = f(x)  # 计算原始函数值
+        
+        for i in range(n):
+            x_i = x.copy()
+            x_i[i] += epsilon  # 对第 i 个元素增加 epsilon
+            fx_i = f(x_i)  # 计算 perturbed 输出
+            
+            # 计算 Jacobian 矩阵的每一列
+            for j in range(m):
+                jacobian[j, i] = (fx_i[j] - fx[j]) / epsilon
+        
+        return jacobian
 
 if __name__ == '__main__':
     x0 = np.random.uniform(-0.05, 0.05, size=(2, ))

@@ -1,5 +1,5 @@
 {
-    "filter_name": "PLF",
+    "filter_name": "NANO",
     "model_name": "Vehicle",
     "noise_name": "Gaussian",
     "result_dir": null,
@@ -7,11 +7,20 @@
     "random_seed": 42,
     "state_outlier_flag": false,
     "measurement_outlier_flag": false,
-    "N_exp": 100,
-    "steps": 50,
+    "n_iterations": 1,
+    "lr": 0.1,
+    "init_type": "iekf",
+    "derivate_type": "stein",
+    "iekf_max_iter": 1,
+    "loss_type": "log_likelihood_loss",
+    "delta": 5,
+    "c": 5,
+    "beta": 0.02,
+    "N_exp": 50,
+    "steps": 200,
     "x_rmse": [
-        0.04783740943223628,
-        0.08813664614132154
+        0.4321980974209434,
+        0.17574354125157574
     ],
-    "time": 0.0017197148653925682
+    "time": 0.0008998345849502026
 }

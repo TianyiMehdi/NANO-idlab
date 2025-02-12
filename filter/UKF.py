@@ -1,6 +1,6 @@
 from einops import rearrange, reduce
 from typing import Dict
-from filterpy.kalman import UnscentedKalmanFilter, MerweScaledSigmaPoints
+from filterpy.kalman import UnscentedKalmanFilter, MerweScaledSigmaPoints, JulierSigmaPoints
 from filterpy.kalman import unscented_transform as UT
 import autograd.numpy as np
 from autograd.numpy import eye, ones, zeros, dot, isscalar, outer
@@ -15,7 +15,9 @@ class UKF(UnscentedKalmanFilter):
             dt = model.dt,
             dim_x = model.dim_x,
             dim_z = model.dim_y,
-            points = MerweScaledSigmaPoints(model.dim_x, alpha=0.1, beta=2.0, kappa=1.0)
+            # 2025-02-11：alpha 越大越好  sin_cos:0.45, vehicle: Julier
+            # points = MerweScaledSigmaPoints(model.dim_x, alpha=0.4, beta=2.0, kappa=0)
+            points = JulierSigmaPoints(model.dim_x, kappa=0)
         )
 
         self.Q = model.Q

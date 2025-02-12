@@ -7,3 +7,5 @@ from .slide_slip_veh import Vehicle
 from .ugv import UGV
 from .wiener_velocity import WienerVelocity
 from .oscillator import Oscillator
+from .pendulum import Pendulum
+# from .robot_linear import RobotLinear

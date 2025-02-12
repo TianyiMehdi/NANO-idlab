@@ -11,9 +11,6 @@ from filter import NANO, EKF, UKF
 from environ import RobotMove
 from save_and_plot import calculate_rmse, save_per_exp
 
-
-
-
 if __name__ == "__main__":
     # Create the parser
     parser = argparse.ArgumentParser(description="")
@@ -37,16 +34,13 @@ if __name__ == "__main__":
 
     # exp arguments
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
-    parser.add_argument("--steps", default=100, type=int, help="Number of the steps in each trajectory")
+    parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")
 
     # Parse the arguments
     args = parser.parse_args()
     args_dict = vars(args)
 
     np.random.seed(args_dict['random_seed'])
-
-    model = RobotMove(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'],
-                        args_dict['noise_name'])
 
     x_mc = []
     y_mc = []
@@ -56,12 +50,15 @@ if __name__ == "__main__":
     for _ in tqdm(range(args_dict['N_exp'])):
         x_list, y_list, x_hat_list = [], [], []
         run_time = []
+        model = RobotMove(args_dict['state_outlier_flag'], args_dict['measurement_outlier_flag'],
+                        args_dict['noise_name'])
+
         # initialize system
         x = model.x0
         y = model.h_withnoise(x)
 
         filter = EKF(model)
-        # filter.x = np.array([-0.1, -0.1])
+        filter.x = np.array([100., -50.])
 
         x_list.append(x)
         y_list.append(y)

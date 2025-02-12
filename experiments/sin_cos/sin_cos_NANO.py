@@ -30,8 +30,8 @@ if __name__ == "__main__":
     # env arguments
     parser.add_argument("--state_outlier_flag", default=False, type=bool, help="")
     parser.add_argument("--measurement_outlier_flag", default=False, type=bool, help="")
-    parser.add_argument("--n_iterations", default=1, type=int, help="Iterations for NANO")
-    parser.add_argument("--lr", default=0.1, type=float, help="Learning Rate for NANO")
+    parser.add_argument("--n_iterations", default=5, type=int, help="Iterations for NANO")
+    parser.add_argument("--lr", default=0.5, type=float, help="Learning Rate for NANO")
     parser.add_argument("--init_type", default='iekf', type=str, help="Initialization type for Natural Gradient iteration")
     # init_type: 'prior', 'laplace', 'iekf'; usually 'prior' for linear and low nonlinearity system, 'iekf' for high nonlinearity system
     parser.add_argument("--derivate_type", default='stein', type=str, help="Derivate type for Natural Gradient iteration")
