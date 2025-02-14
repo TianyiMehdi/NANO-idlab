@@ -1,0 +1,16 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Robot",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.9524684924316937,
+        0.5794560620799354
+    ],
+    "time": 0.0005108042338385654,
+    "max_iter": 2,
+    "current_time": "2025-02-13-16-43"
+}

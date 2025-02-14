@@ -3,10 +3,9 @@ import autograd.numpy as np
 
 
 class EKF(ExtendedKalmanFilter):
-    def __init__(self, model, **filter_dict):
+    def __init__(self, model):
         super().__init__(dim_x=model.dim_x,
-                         dim_z=model.dim_y,
-                         )
+                         dim_z=model.dim_y)
         
         self.f = model.f
         self.h = model.h
@@ -19,7 +18,7 @@ class EKF(ExtendedKalmanFilter):
         self.x = model.x0
         self.P = model.P0 
 
-    def predict(self, u=0):
+    def predict(self, u=None):
         F = self.jac_f(self.x, u)
         self.x = self.f(self.x, u)
         self.P = F @ self.P @ F.T + self.Q

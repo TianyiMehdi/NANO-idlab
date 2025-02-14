@@ -1,0 +1,16 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Robot",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.9495513808599533,
+        0.5744203435059083
+    ],
+    "time": 0.000530615595716927,
+    "max_iter": 1,
+    "current_time": "2025-02-13-23-50"
+}

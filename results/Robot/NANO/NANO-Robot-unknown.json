@@ -1,0 +1,18 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Robot",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.9044287243315996,
+        0.5490932634258487
+    ],
+    "time": 0.005143598695496219,
+    "n_iterations": 5,
+    "lr": 0.5,
+    "init_type": "ukf",
+    "current_time": "2025-02-14-14-09"
+}

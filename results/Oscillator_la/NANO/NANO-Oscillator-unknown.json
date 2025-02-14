@@ -1,0 +1,18 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Oscillator",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.9143003581899414,
+        0.9249522344645298
+    ],
+    "time": 0.00020742071333842063,
+    "n_iterations": 1,
+    "lr": 1,
+    "init_type": "prior",
+    "current_time": "2025-02-13-18-47"
+}

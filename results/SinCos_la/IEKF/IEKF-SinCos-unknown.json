@@ -1,0 +1,16 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "SinCos",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        1.7254310789749139,
+        1.6994137076942457
+    ],
+    "time": 0.00020170964188312164,
+    "max_iter": 3,
+    "current_time": "2025-02-13-09-48"
+}

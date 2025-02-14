@@ -1,0 +1,15 @@
+{
+    "filter_name": "PLF",
+    "model_name": "SinCos",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        2.1895476797714277,
+        2.1769298978005898
+    ],
+    "time": 0.000490873351168992,
+    "current_time": "2025-02-13-09-48"
+}

@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Toy",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        15.1470754032606,
+        16.127347477764843,
+        16.42095148131388
+    ],
+    "time": 0.0005240563531616825,
+    "current_time": "2025-02-13-23-29"
+}

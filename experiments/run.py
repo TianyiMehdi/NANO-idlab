@@ -3,7 +3,8 @@ import time
 import autograd.numpy as np
 import importlib
 
-def run_filter(N_exp, steps, model_name, noise_type, filter_name, x_hat0, filter_dict):
+def run_filter(N_exp, steps, model_name, noise_type, filter_name, 
+               x_hat0, filter_dict, control_input=None):
     x_mc = []
     y_mc = []
     x_hat_mc = []
@@ -33,7 +34,11 @@ def run_filter(N_exp, steps, model_name, noise_type, filter_name, x_hat0, filter
 
         for i in range(1, steps):
             # generate data
-            x = model.f_withnoise(x)
+            if control_input is None:
+                u = None
+            else: 
+                u = control_input[i]
+            x = model.f_withnoise(x, u)
             y = model.h_withnoise(x)
             x_list.append(x)
             y_list.append(y)
@@ -41,7 +46,7 @@ def run_filter(N_exp, steps, model_name, noise_type, filter_name, x_hat0, filter
             time1 = time.time()
             
             # perform filtering
-            filter.predict()
+            filter.predict(u)
             filter.update(y)
             time2 = time.time()
             x_hat_list.append(filter.x)

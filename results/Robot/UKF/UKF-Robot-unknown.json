@@ -1,0 +1,15 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Robot",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.9572109152681069,
+        0.6398913580220209
+    ],
+    "time": 0.00024345407533885247,
+    "current_time": "2025-02-13-23-49"
+}

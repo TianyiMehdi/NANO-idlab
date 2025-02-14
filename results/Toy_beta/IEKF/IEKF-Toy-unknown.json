@@ -1,0 +1,17 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Toy",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        12.609258628494945,
+        10.546721711905558,
+        9.159871104553538
+    ],
+    "time": 0.0005923489949212002,
+    "max_iter": 3,
+    "current_time": "2025-02-14-12-31"
+}

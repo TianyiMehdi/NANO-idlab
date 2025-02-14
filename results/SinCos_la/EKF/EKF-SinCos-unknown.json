@@ -1,0 +1,15 @@
+{
+    "filter_name": "EKF",
+    "model_name": "SinCos",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        1.869591346983222,
+        1.8897470995515635
+    ],
+    "time": 0.00016332293275612682,
+    "current_time": "2025-02-13-09-47"
+}

@@ -1,0 +1,15 @@
+{
+    "filter_name": "UKF",
+    "model_name": "SinCos",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        2.6215816880854503,
+        2.6061779232421474
+    ],
+    "time": 0.00012244310810338312,
+    "current_time": "2025-02-13-09-47"
+}

@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Toy",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        25.215505280891662,
+        25.192296766292273,
+        25.744470304590962
+    ],
+    "time": 0.0005178431649902958,
+    "current_time": "2025-02-14-12-30"
+}

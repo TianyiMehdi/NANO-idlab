@@ -43,9 +43,8 @@ class Wiener(Model):
             self.R = np.diag(self.obs_var)
 
 
-    def f(self, x, dt=None, u=None):
-        if u is None:
-            return self.F @ x
+    def f(self, x, u=None):
+        return self.F @ x
 
     def h(self, x):
         return self.H @ x
@@ -56,7 +55,7 @@ class Wiener(Model):
     def jac_h(self, x):
         return self.H
 
-    def f_withnoise(self, x):
+    def f_withnoise(self, x, u=None):
         if self.state_outlier_flag:
             prob = np.random.rand()
             if prob <= 0.9:
@@ -65,7 +64,7 @@ class Wiener(Model):
                 cov = 100 * self.Q  # 5%概率使用100Q
         else:
             cov = self.Q
-        return self.f(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=cov)
+        return self.f(x, u) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=cov)
     
     def h_withnoise(self, x):
         if self.noise_type == 'Gaussian':

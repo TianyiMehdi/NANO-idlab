@@ -1,6 +1,6 @@
 import autograd.numpy as np
 from autograd import hessian
-from filterpy.kalman import JulierSigmaPoints
+from filterpy.kalman import JulierSigmaPoints, MerweScaledSigmaPoints
 from filterpy.kalman import unscented_transform as UT
 from scipy.optimize import minimize
 
@@ -27,6 +27,8 @@ class NANO:
 
         self.n_iterations = filter_dict['n_iterations']
         self.points = JulierSigmaPoints(self.dim_x, kappa=0)
+        # self.points = MerweScaledSigmaPoints(self.dim_x, alpha=0.45, beta=2.0, kappa=1.0)
+        # self.sigmas_f = np.zeros((self.points.num_sigmas, self.dim_x))
         self.x_prior = model.x0
         self.P_prior = model.P0
         self.x_post = model.x0
@@ -74,23 +76,37 @@ class NANO:
         
         return x_hat_posterior, P_posterior_inv
 
-    # def update_ukf_init(self, y, x_prior, P_prior):
-    #     x = x_prior
-    #     P = P_prior
-    #     sigmas_h = []
-    #     for s in self.sigmas_f:
-    #         sigmas_h.append(self.h(s))
-    #     sigmas_h = np.atleast_2d(sigmas_h)
-    #     zp, S = UT(sigmas_h, self.points.Wm, self.points.Wc, self.R, self.z_mean, self.residual_z)
-    #     SI = np.linalg.inv(S)
-    #     Pxz = self.cross_variance(x, zp, self.sigmas_f, sigmas_h)
-    #     K = np.dot(Pxz, SI)        # Kalman gain
-    #     self.y = self.residual_z(y, zp)   # residual
+    def update_ukf_init(self, y, x_prior, P_prior):
+        x = x_prior
+        P = P_prior
+        sigmas_h = []
+        for s in self.sigmas_f:
+            sigmas_h.append(self.h(s))
+        sigmas_h = np.atleast_2d(sigmas_h)
+        zp, S = UT(sigmas_h, self.points.Wm, self.points.Wc, self.R)
+        SI = np.linalg.inv(S)
+        Pxz = self.cross_variance(x, zp, self.sigmas_f, sigmas_h)
+        K = np.dot(Pxz, SI)        # Kalman gain
+        y = y - zp   # residual
 
-    #     self.x = self.x + np.dot(self.K, self.y)
-    #     self.P = self.P - np.dot(self.K, np.dot(self.S, self.K.T))
+        x = x + np.dot(K, y)
+        P = P - np.dot(K, np.dot(S, K.T))
+        return x, np.linalg.inv(P)
     
-    def predict(self, u=0):
+    def cross_variance(self, x, z, sigmas_f, sigmas_h):
+        """
+        Compute cross variance of the state `x` and measurement `z`.
+        """
+
+        Pxz = np.zeros((sigmas_f.shape[1], sigmas_h.shape[1]))
+        N = sigmas_f.shape[0]
+        for i in range(N):
+            dx = sigmas_f[i] - x
+            dz = sigmas_h[i] - z
+            Pxz += self.points.Wc[i] * np.outer(dx, dz)
+        return Pxz
+    
+    def predict(self, u=None):
         sigmas = self.points.sigma_points(self.x, self.P)
 
         self.sigmas_f = np.zeros((len(sigmas), self.dim_x))
@@ -118,6 +134,8 @@ class NANO:
             x_hat, P_inv = self.update_init(y, x_hat_prior, self.P.copy())
         elif self.init_type == 'iekf':
             x_hat, P_inv = self.update_iekf_init(y, x_hat_prior, self.P.copy(), self.iekf_max_iter)
+        elif self.init_type == 'ukf':
+            x_hat, P_inv = self.update_ukf_init(y, x_hat_prior, self.P.copy())
         else:
             raise ValueError
         

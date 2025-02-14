@@ -1,0 +1,16 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Toy",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        21.812460839215255,
+        26.799354709268968,
+        32.37509576559001
+    ],
+    "time": 0.00013222648869806798,
+    "current_time": "2025-02-14-12-31"
+}

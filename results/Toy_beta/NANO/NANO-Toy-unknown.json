@@ -1,0 +1,20 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Toy",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        11.518297286804586,
+        7.81718032098571,
+        7.870983918478507
+    ],
+    "time": 0.0028755022652784184,
+    "n_iterations": 5,
+    "lr": 0.5,
+    "init_type": "iekf",
+    "iekf_max_iter": 3,
+    "current_time": "2025-02-14-12-38"
+}

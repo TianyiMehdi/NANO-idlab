@@ -1,0 +1,15 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Yau",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.30012632297705677,
+        0.360009630171412
+    ],
+    "time": 9.437436434491795e-05,
+    "current_time": "2025-02-13-13-37"
+}

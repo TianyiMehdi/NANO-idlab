@@ -37,7 +37,7 @@ class Oscillator(Model):
         
         elif noise_type == 'Laplace':
             self.scale=1
-            self.R = self.scale * np.eye(np.dim_y)
+            self.R = self.scale * np.eye(self.dim_y)
         
         else:
             raise ValueError
@@ -54,18 +54,18 @@ class Oscillator(Model):
     def jac_h(self, x):
         return self.H
 
-    def f_withnoise(self, x):
-        return self.f(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=self.Q)
+    def f_withnoise(self, x, u=None):
+        return self.f(x, u=None) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=self.Q)
     
     def h_withnoise(self, x):
         if self.noise_type == 'Gaussian':
             return self.h(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_y), cov=self.R)
         
         elif self.noise_type == 'Beta':
-            raise NotImplementedError
-            # noise = np.random.beta(self.alpha, self.beta, self.dim_y)
-            # noise = noise - np.mean(noise)
-            # return self.h(x) + noise
+            noise = np.random.beta(self.alpha, self.beta, self.dim_y)
+            mean = self.alpha / (self.alpha + self.beta)
+            noise = noise - mean
+            return self.h(x) + noise
         
         elif self.noise_type == 'Laplace':
             return self.h(x) + np.random.laplace(loc=0, scale=self.scale, size=(self.dim_y, ))

@@ -1,0 +1,15 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Oscillator",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.17523006741281347,
+        0.1704893969641655
+    ],
+    "time": 6.248924600419087e-05,
+    "current_time": "2025-02-13-18-50"
+}

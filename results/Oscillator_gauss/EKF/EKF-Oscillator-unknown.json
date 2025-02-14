@@ -1,0 +1,15 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Oscillator",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.715954351860883,
+        0.701884257367906
+    ],
+    "time": 1.8201137906941936e-05,
+    "current_time": "2025-02-13-18-43"
+}

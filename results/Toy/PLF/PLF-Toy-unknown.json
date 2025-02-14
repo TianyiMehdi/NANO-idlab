@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Toy",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        10.511052239206197,
+        12.087837079709605,
+        12.307512116045668
+    ],
+    "time": 0.0003011589433679629,
+    "max_iter": 1,
+    "current_time": "2025-02-13-23-32"
+}

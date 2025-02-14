@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # Filter parameters
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
-    parser_filter.add_argument("--max_iter", default=3, type=float, help="Maximum Iteration for iEKF")
+    parser_filter.add_argument("--max_iter", default=2, type=float, help="Maximum Iteration for iEKF")
     args_filter = parser_filter.parse_args()
     filter_dict = vars(args_filter)
 
@@ -36,7 +36,12 @@ if __name__ == "__main__":
     x_hat_mc = []
     all_time = []
 
-    x_hat0 = np.array([100.0, -50.0])
-    data_dict = run_filter(args_dict['N_exp'], args_dict['steps'], args_dict['model_name'], args_dict['noise_type'], args_dict['filter_name'], x_hat0, filter_dict)
+    x_hat0 = np.array([10.0, -5.0])
+    t = np.arange(1, args_dict['steps'] + 1)
+    control_input = 10 * np.sin(2 * np.pi * t * 0.05)
+    data_dict = run_filter(args_dict['N_exp'], args_dict['steps'], 
+                           args_dict['model_name'], args_dict['noise_type'], 
+                           args_dict['filter_name'], x_hat0, filter_dict,
+                           control_input)
 
     save_per_exp(data_dict, args_dict, filter_dict)

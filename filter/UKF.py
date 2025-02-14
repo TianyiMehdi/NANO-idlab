@@ -1,9 +1,7 @@
-from einops import rearrange, reduce
-from typing import Dict
 from filterpy.kalman import UnscentedKalmanFilter, MerweScaledSigmaPoints, JulierSigmaPoints
 from filterpy.kalman import unscented_transform as UT
 import autograd.numpy as np
-from autograd.numpy import eye, ones, zeros, dot, isscalar, outer
+from autograd.numpy import dot
 from copy import deepcopy
 
 class UKF(UnscentedKalmanFilter):
@@ -15,9 +13,7 @@ class UKF(UnscentedKalmanFilter):
             dt = model.dt,
             dim_x = model.dim_x,
             dim_z = model.dim_y,
-            # 2025-02-11：alpha 越大越好  sin_cos:0.45, vehicle: Julier
-            # points = MerweScaledSigmaPoints(model.dim_x, alpha=0.4, beta=2.0, kappa=0)
-            points = JulierSigmaPoints(model.dim_x, kappa=0)
+            points = MerweScaledSigmaPoints(model.dim_x, alpha=0.3, beta=2.0, kappa=0)
         )
 
         self.Q = model.Q
@@ -26,7 +22,7 @@ class UKF(UnscentedKalmanFilter):
         self.x = model.x0
         self.P = model.P0
         
-    def compute_process_sigmas(self, u=0, dt=None, fx=None):
+    def compute_process_sigmas(self, u=None, dt=None, fx=None):
 
         if fx is None:
             fx = self.fx
@@ -36,12 +32,12 @@ class UKF(UnscentedKalmanFilter):
         for i, s in enumerate(sigmas):
             self.sigmas_f[i] = fx(s, u)
         
-    def predict(self, u=0):
+    def predict(self, u=None):
         self.compute_process_sigmas(u)
         #and pass sigmas through the unscented transform to compute prior
         self.x, self.P = UT(self.sigmas_f, self.Wm, self.Wc, self.Q,
                         self.x_mean, self.residual_x)
-        self.sigmas_f = self.points_fn.sigma_points(self.x, self.P)
+        # self.sigmas_f = self.points_fn.sigma_points(self.x, self.P)
         
         self.x_prior = np.copy(self.x)
         self.P_prior = np.copy(self.P)
@@ -52,7 +48,7 @@ class UKF(UnscentedKalmanFilter):
         for s in self.sigmas_f:
             sigmas_h.append(self.hx(s))
         self.sigmas_h = np.atleast_2d(sigmas_h)
-        zp, self.S = UT(self.sigmas_h, self.Wm, self.Wc, self.R, self.z_mean, self.residual_z)
+        zp, self.S = UT(self.sigmas_h, self.Wm, self.Wc, self.R)
         self.SI = self.inv(self.S)
         Pxz = self.cross_variance(self.x, zp, self.sigmas_f, self.sigmas_h)
         self.K = dot(Pxz, self.SI)        # Kalman gain

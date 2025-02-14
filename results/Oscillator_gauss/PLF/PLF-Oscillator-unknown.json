@@ -1,0 +1,15 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Oscillator",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.7159543518608832,
+        0.7018842573679062
+    ],
+    "time": 0.00019709184541175112,
+    "current_time": "2025-02-13-18-44"
+}

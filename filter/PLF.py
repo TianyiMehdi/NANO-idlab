@@ -1,6 +1,6 @@
 from einops import rearrange, reduce
 from typing import Dict
-from filterpy.kalman import UnscentedKalmanFilter, MerweScaledSigmaPoints
+from filterpy.kalman import UnscentedKalmanFilter, MerweScaledSigmaPoints, JulierSigmaPoints
 from filterpy.kalman import unscented_transform as UT
 import autograd.numpy as np
 from autograd.numpy import eye, ones, zeros, dot, isscalar, outer
@@ -9,14 +9,15 @@ from .utils import is_positive_semidefinite, kl_divergence
 
 class PLF(UnscentedKalmanFilter):
     
-    def __init__(self, model):
+    def __init__(self, model, **filter_dict):
         super().__init__(
             fx = model.f,
             hx = model.h,
             dt = model.dt,
             dim_x = model.dim_x,
             dim_z = model.dim_y,
-            points = MerweScaledSigmaPoints(model.dim_x, alpha=0.1, beta=2.0, kappa=1.0)
+            # points = JulierSigmaPoints(model.dim_x, kappa=0)
+            points = MerweScaledSigmaPoints(model.dim_x, alpha=0.3, beta=2.0, kappa=0)
         )
 
         self.Q = model.Q
@@ -24,8 +25,10 @@ class PLF(UnscentedKalmanFilter):
 
         self.x = model.x0
         self.P = model.P0
+
+        self.max_iter = filter_dict['max_iter']
         
-    def compute_process_sigmas(self, u=0, dt=None, fx=None):
+    def compute_process_sigmas(self, u=None, dt=None, fx=None):
 
         if fx is None:
             fx = self.fx
@@ -35,7 +38,7 @@ class PLF(UnscentedKalmanFilter):
         for i, s in enumerate(sigmas):
             self.sigmas_f[i] = fx(s, u)
         
-    def predict(self, u=0):
+    def predict(self, u=None):
         self.compute_process_sigmas(u)
         #and pass sigmas through the unscented transform to compute prior
         self.x, self.P = UT(self.sigmas_f, self.Wm, self.Wc, self.Q,
@@ -50,11 +53,12 @@ class PLF(UnscentedKalmanFilter):
         x_hat_old = 100 * np.ones_like(x_hat)
         P_hat_old = 100 * np.eye(self._dim_x)
         iter = 0
-        while kl_divergence(x_hat_old, P_hat_old, x_hat, P_hat) >= 1e-4 and iter <= 100:
+        sigmas = self.sigmas_f
+        # max_iter:5
+        while kl_divergence(x_hat_old, P_hat_old, x_hat, P_hat) >= 1e-2 and iter <= self.max_iter:
             iter += 1
             x_hat_old = x_hat
             P_hat_old = P_hat
-            sigmas = self.points_fn.sigma_points(x_hat, P_hat)
             sigmas_h = zeros((self._num_sigmas, self._dim_z))
             for i, s in enumerate(sigmas):
                 sigmas_h[i] = self.hx(s)
@@ -68,6 +72,7 @@ class PLF(UnscentedKalmanFilter):
 
             x_hat = self.x_prior + self.P_prior @ H.T @ np.linalg.inv(H @ self.P_prior @ H.T + Omega + self.R) @ (z - H @ self.x_prior - b)
             P_hat = self.P_prior - self.P_prior @ H.T @ np.linalg.inv(H @ self.P_prior @ H.T + Omega + self.R) @ H @ self.P_prior
+            sigmas = self.points_fn.sigma_points(x_hat, P_hat)
         
         self.x = x_hat
         self.P = P_hat

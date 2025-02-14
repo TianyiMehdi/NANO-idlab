@@ -24,9 +24,9 @@ if __name__ == "__main__":
     args_dict = vars(args)
 
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
-    parser_filter.add_argument("--n_iterations", default=1, type=int, help="Iterations for NANO")
-    parser_filter.add_argument("--lr", default=0.1, type=float, help="Learning Rate for NANO")
-    parser_filter.add_argument("--init_type", default='iekf', type=str, help="Initialization type for Natural Gradient iteration, 'prior', 'laplace', 'iekf'")
+    parser_filter.add_argument("--n_iterations", default=5, type=int, help="Iterations for NANO")
+    parser_filter.add_argument("--lr", default=0.5, type=float, help="Learning Rate for NANO")
+    parser_filter.add_argument("--init_type", default='ukf', type=str, help="Initialization type for Natural Gradient iteration, 'prior', 'laplace', 'iekf'")
     
     args_filter = parser_filter.parse_args()
     filter_dict = vars(args_filter)
@@ -44,7 +44,12 @@ if __name__ == "__main__":
     x_hat_mc = []
     all_time = []
 
-    x_hat0 = np.array([100.0, -50.0])
-    data_dict = run_filter(args_dict['N_exp'], args_dict['steps'], args_dict['model_name'], args_dict['noise_type'], args_dict['filter_name'], x_hat0, filter_dict)
+    x_hat0 = np.array([10.0, -5.0])
+    t = np.arange(1, args_dict['steps'] + 1)
+    control_input = 10 * np.sin(2 * np.pi * t * 0.05)
+    data_dict = run_filter(args_dict['N_exp'], args_dict['steps'], 
+                           args_dict['model_name'], args_dict['noise_type'], 
+                           args_dict['filter_name'], x_hat0, filter_dict,
+                           control_input)
 
     save_per_exp(data_dict, args_dict, filter_dict)

@@ -1,0 +1,15 @@
+{
+    "filter_name": "PLF",
+    "model_name": "SinCos",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        31.902675792276565,
+        73.3971949235602
+    ],
+    "time": 0.0005147274774522637,
+    "current_time": "2025-02-13-09-53"
+}

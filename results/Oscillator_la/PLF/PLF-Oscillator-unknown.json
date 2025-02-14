@@ -1,0 +1,15 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Oscillator",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.9143003581899417,
+        0.9249522344645298
+    ],
+    "time": 0.00019575380200716717,
+    "current_time": "2025-02-13-18-47"
+}

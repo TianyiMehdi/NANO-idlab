@@ -1,0 +1,16 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Robot",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        8.055202782899237,
+        3.884395162826346
+    ],
+    "time": 0.000522893876885649,
+    "max_iter": 3,
+    "current_time": "2025-02-13-12-55"
+}

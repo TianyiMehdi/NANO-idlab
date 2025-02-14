@@ -8,30 +8,34 @@ class SinCos(Model):
 
     dt : float = 1.0
 
-    def __init__(self, state_outlier_flag=False, 
-                measurement_outlier_flag=False, noise_type='Gaussian'):
+    def __init__(self, noise_type='Gaussian'):
         super().__init__(self)
         self.dim_x = 2
         self.dim_y = 2
         self.P0 = 25 * np.eye(self.dim_x)
         self.x0 = np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=self.P0)
         
-        self.state_outlier_flag = state_outlier_flag
-        self.measurement_outlier_flag = measurement_outlier_flag
-        self.noise_type = noise_type
-        self.alpha = 2.0
-        self.beta = 5.0
-        self.obs_var = np.ones(self.dim_y)
-
         self.Q = np.eye(self.dim_x) * 4
-        if noise_type == 'Beta':
-            self.R = np.eye(self.dim_y) * (self.alpha * self.beta) / (
-                        (self.alpha + self.beta) ** 2 * (self.alpha + self.beta + 1))
-        else:
-            self.R = np.eye(self.dim_y)
-        
 
-    def f(self, x, u=0):
+        self.noise_type = noise_type
+
+        if noise_type == 'Gaussian':
+            obs_var = np.ones(self.dim_y)
+            self.R = np.diag(obs_var)
+
+        elif noise_type == 'Beta':       
+            self.alpha = 2.0
+            self.beta = 5.0
+            self.R = np.eye(self.dim_y) * (self.alpha * self.beta) / ((self.alpha + self.beta) ** 2 * (self.alpha + self.beta + 1))
+        
+        elif noise_type == 'Laplace':
+            self.scale=1
+            self.R = self.scale * np.eye(self.dim_y)
+        
+        else:
+            raise ValueError
+
+    def f(self, x, u=None):
         #  parmater
         k1 = 0.1
         k2 = 0.1
@@ -43,40 +47,24 @@ class SinCos(Model):
         y = x + sin(x)
         return y
     
-    def f_withnoise(self, x):
-        if self.state_outlier_flag:
-            prob = np.random.rand()
-            if prob <= 0.95:
-                cov = self.Q  # 95%概率使用Q
-            else:
-                cov = 100 * self.Q  # 5%概率使用100Q
-        else:
-            cov = self.Q
-        return self.f(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=cov)
+    def f_withnoise(self, x, u=None):
+        return self.f(x, u) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=self.Q)
     
     def h_withnoise(self, x):
         if self.noise_type == 'Gaussian':
-            if self.measurement_outlier_flag:
-                prob = np.random.rand()
-                if prob <= 0.95:
-                    cov = self.R  # 95%概率使用R
-                else:
-                    cov = 10 * self.R  # 5%概率使用100R
-            else:
-                cov = self.R
-            return self.h(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_y), cov=cov)
+            return self.h(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_y), cov=self.R)
         elif self.noise_type == 'Beta':
             noise = np.random.beta(self.alpha, self.beta, self.dim_y)
-            noise = noise - np.mean(noise)
+            mean = self.alpha / (self.alpha + self.beta)
+            noise = noise - mean
             return self.h(x) + noise
+        elif self.noise_type == 'Laplace':
+            return self.h(x) + np.random.laplace(loc=0, scale=self.scale, size=(self.dim_y,))
         else:
-            return self.h(x) + np.random.laplace(loc=0, scale=self.obs_var, size=(self.dim_y,))
-
-    def jac_f(self, x_hat, u=0):
-        return jacobian(lambda x: self.f(x))(x_hat)
+            raise ValueError
     
-    # def jac_h(self, x_hat, u=0):
-    #     return jacobian(lambda x: self.h(x))(x_hat)
+    def jac_f(self, x_hat, u=None):
+        return jacobian(lambda x: self.f(x))(x_hat)
     
     def jac_h(self, x_hat):
         return np.array([

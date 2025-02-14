@@ -1,0 +1,15 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Robot",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        7.278261682161549,
+        5.307757803150377
+    ],
+    "time": 0.00023243733985939223,
+    "current_time": "2025-02-13-13-02"
+}

@@ -1,0 +1,15 @@
+{
+    "filter_name": "EKF",
+    "model_name": "SinCos",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        103.50256589690855,
+        156.22818329555906
+    ],
+    "time": 0.00016523574464884238,
+    "current_time": "2025-02-13-09-50"
+}

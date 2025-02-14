@@ -1,0 +1,19 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Toy",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        6.614534689233574,
+        6.966062704678094,
+        7.484066532221049
+    ],
+    "time": 0.0008482395105026474,
+    "n_iterations": 1,
+    "lr": 0.1,
+    "init_type": "ukf",
+    "current_time": "2025-02-14-12-28"
+}

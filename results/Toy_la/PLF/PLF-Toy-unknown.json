@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Toy",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        11.206061314497745,
+        11.72742278174195,
+        12.454723164449085
+    ],
+    "time": 0.00029671199357689324,
+    "max_iter": 1,
+    "current_time": "2025-02-14-12-27"
+}

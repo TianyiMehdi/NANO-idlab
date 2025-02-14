@@ -1,0 +1,15 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Robot",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        8.134704847914172,
+        3.91708499287335
+    ],
+    "time": 0.00019052527058663677,
+    "current_time": "2025-02-13-12-54"
+}
