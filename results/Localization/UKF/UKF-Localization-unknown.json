@@ -1,0 +1,16 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Localization",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.109233495194264,
+        0.10916594464476535,
+        0.050880440875339765
+    ],
+    "time": 0.0003383705723824813,
+    "current_time": "2025-02-16-15-49"
+}

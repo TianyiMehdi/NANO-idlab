@@ -1,0 +1,17 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Localization",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.1309070970488163,
+        0.09251573953718871,
+        0.05600383340035111
+    ],
+    "time": 0.0004438760172781633,
+    "max_iter": 2,
+    "current_time": "2025-02-16-08-38"
+}

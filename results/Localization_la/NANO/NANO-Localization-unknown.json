@@ -1,0 +1,20 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Localization",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.058459821674225934,
+        0.07035871109473889,
+        0.055640189854944594
+    ],
+    "time": 0.004360564222287891,
+    "n_iterations": 5,
+    "lr": 1.0,
+    "init_type": "iekf",
+    "iekf_max_iter": 5,
+    "current_time": "2025-02-16-08-39"
+}

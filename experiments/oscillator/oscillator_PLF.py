@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # Filter parameters
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
-    
+    parser_filter.add_argument("--max_iter", default=1, type=float, help="Maximum Iteration for PLF")
     args_filter = parser_filter.parse_args()
     filter_dict = vars(args_filter)
 

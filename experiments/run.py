@@ -39,6 +39,7 @@ def run_filter(N_exp, steps, model_name, noise_type, filter_name,
             else: 
                 u = control_input[i]
             x = model.f_withnoise(x, u)
+            # x = model.f(x, u)
             y = model.h_withnoise(x)
             x_list.append(x)
             y_list.append(y)

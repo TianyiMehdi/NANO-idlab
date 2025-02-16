@@ -1,0 +1,18 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Oscillator",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.6613650596251476,
+        0.5794686956023228
+    ],
+    "time": 0.00019780005641918083,
+    "n_iterations": 1,
+    "lr": 1,
+    "init_type": "prior",
+    "current_time": "2025-02-15-09-50"
+}

@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Localization",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.14603254433613935,
+        0.15971715548990167,
+        0.06555371559831347
+    ],
+    "time": 0.0007010913733860954,
+    "max_iter": 1,
+    "current_time": "2025-02-16-08-30"
+}

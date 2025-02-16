@@ -2,6 +2,8 @@ class Model:
 
     def __init__(self, noise_type='Gaussian'):
         self.noise_type = noise_type
+        
+        
     
     def f(self, x, u=None):
         pass

@@ -88,50 +88,54 @@ def plot_state(data_dir, filter_name, **data_dict):
     # 使用 Seaborn 的样式
     plt.style.use(f"{directory_path}/style.mpl")
 
+    mc = x_mc.shape[0]
+    for k in range(10):
     # 对每个状态绘制 x_mc 和 x_hat_mc 的均值曲线
-    for state_index in range(num_states):
-        # 计算 x_mc 和 x_hat_mc 的均值和标准差
-        x_mc_mean = x_mc[:, :, state_index].mean(axis=0)
-        x_mc_std = x_mc[:, :, state_index].std(axis=0)
-        x_hat_mc_mean = x_hat_mc[:, :, state_index].mean(axis=0)
-        x_hat_mc_std = x_hat_mc[:, :, state_index].std(axis=0)
+        for state_index in range(num_states):
+            # 计算 x_mc 和 x_hat_mc 的均值和标准差
+            x_mc_mean = x_mc[k, :, state_index]
+            # x_mc_std = x_mc[:, :, state_index].std(axis=0)
+            x_hat_mc_mean = x_hat_mc[k, :, state_index]
+            # x_hat_mc_std = x_hat_mc[:, :, state_index].std(axis=0)
 
-        # 准备用于 Seaborn 绘图的数据
-        data = pd.DataFrame({
-            'Step': np.arange(num_steps),
-            'x_mc_mean': x_mc_mean,
-            'x_mc_std': x_mc_std,
-            'x_hat_mc_mean': x_hat_mc_mean,
-            'x_hat_mc_std': x_hat_mc_std
-        })
+            # 准备用于 Seaborn 绘图的数据
+            data = pd.DataFrame({
+                'Step': np.arange(num_steps),
+                'x_mc_mean': x_mc_mean,
+                # 'x_mc_std': x_mc_std,
+                'x_hat_mc_mean': x_hat_mc_mean,
+                # 'x_hat_mc_std': x_hat_mc_std
+            })
 
-        # 绘制均值曲线（带标准差）
-        plt.figure(figsize=(8, 6))
-        sns.lineplot(x='Step', y='x_mc_mean', data=data, label='True', ci=None)
-        sns.lineplot(x='Step', y='x_hat_mc_mean', data=data, label='Estimate', ci=None)
+            # 绘制均值曲线（带标准差）
+            plt.figure(figsize=(8, 6))
+            sns.lineplot(x='Step', y='x_mc_mean', data=data, label='True', ci=None)
+            sns.lineplot(x='Step', y='x_hat_mc_mean', data=data, label='Estimate', ci=None)
 
-        # 填充标准差区域
-        plt.fill_between(data['Step'], 
-                         data['x_mc_mean'] - data['x_mc_std'], 
-                         data['x_mc_mean'] + data['x_mc_std'], 
-                         color='blue', alpha=0.2)
-        plt.fill_between(data['Step'], 
-                         data['x_hat_mc_mean'] - data['x_hat_mc_std'], 
-                         data['x_hat_mc_mean'] + data['x_hat_mc_std'], 
-                         color='orange', alpha=0.2)
+            # # 填充标准差区域
+            # plt.fill_between(data['Step'], 
+            #                 data['x_mc_mean'] - data['x_mc_std'], 
+            #                 data['x_mc_mean'] + data['x_mc_std'], 
+            #                 color='blue', alpha=0.2)
+            # plt.fill_between(data['Step'], 
+            #                 data['x_hat_mc_mean'] - data['x_hat_mc_std'], 
+            #                 data['x_hat_mc_mean'] + data['x_hat_mc_std'], 
+            #                 color='orange', alpha=0.2)
 
-        plt.xlabel("Step")
-        plt.ylabel(r'$x_{}$ Value'.format(state_index + 1))  # 使用 TeX 公式
-        plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
-        plt.xlim(0, num_steps - 1)
+            plt.xlabel("Step")
+            plt.ylabel(r'$x_{}$ Value'.format(state_index + 1))  # 使用 TeX 公式
+            plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
+            plt.xlim(0, num_steps - 1)
+            # plt.xlim(50, 100)
 
-        # 添加图例
-        plt.legend()
 
-        # 保存图像
-        plt.tight_layout()
-        plt.savefig(os.path.join(data_dir, f'{filter_name}_state_{state_index + 1}_comparison.png'))
-        plt.close()
+            # 添加图例
+            plt.legend()
+
+            # 保存图像
+            plt.tight_layout()
+            plt.savefig(os.path.join(data_dir, f'{filter_name}_mc_{k}_state_{state_index + 1}_comparison.png'))
+            # plt.close()
 
 
 def plot_state_rmse_error(data_dir, filter_name, **data_dict):

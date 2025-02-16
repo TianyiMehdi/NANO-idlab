@@ -1,0 +1,16 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Localization",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.16145788573208286,
+        0.1624692533224142,
+        0.07004860092576246
+    ],
+    "time": 0.0003282388370839795,
+    "current_time": "2025-02-16-08-29"
+}

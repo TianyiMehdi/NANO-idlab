@@ -27,7 +27,6 @@ class NANO:
 
         self.n_iterations = filter_dict['n_iterations']
         self.points = JulierSigmaPoints(self.dim_x, kappa=0)
-        # self.points = MerweScaledSigmaPoints(self.dim_x, alpha=0.45, beta=2.0, kappa=1.0)
         # self.sigmas_f = np.zeros((self.points.num_sigmas, self.dim_x))
         self.x_prior = model.x0
         self.P_prior = model.P0

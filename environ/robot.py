@@ -1,7 +1,6 @@
 import autograd.numpy as np
 from .model import Model
 
-
 class Robot(Model):
 
     dt : float = 0.1
@@ -10,16 +9,16 @@ class Robot(Model):
         super().__init__(self)
         
         self.dim_x = 2 
-        self.dim_y = 8 
+        self.dim_y = 4 
         self.P0 = np.eye(self.dim_x)
         self.x0 = np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=self.P0)
 
-        self.Q = np.eye(self.dim_x) * 0.01
+        self.Q = np.eye(self.dim_x)*0.1**2
 
         self.noise_type = noise_type
 
         if noise_type == 'Gaussian':
-            obs_var = np.ones(self.dim_y)
+            obs_var = np.ones(self.dim_y)*0.09**2
             self.R = np.diag(obs_var)
 
         elif noise_type == 'Beta':       
@@ -42,19 +41,22 @@ class Robot(Model):
             x2_ = x2 + dt
         else:
             x1, x2 = x
-            x1_ = x1 + u * np.cos(np.pi/3) * dt
-            x2_ = x2 + u * np.sin(np.pi/3) * dt
+            x1_ = x1 + 0.1*np.cos(x2 / 5) + u * np.cos(np.pi/3) * dt
+            x2_ = x2 + 0.3*np.sin(x1 / 5) + u * np.sin(np.pi/3) * dt
         return np.array([x1_, x2_])
 
     def h(self, x):
-        landmarks = np.array([[-1, 2], [5, 10], [12, 14], [18, 21]])
+        # landmarks = np.array([[-1, 2], [5, 10], [12, 14], [18, 21]])
+        # landmarks = np.array([[-1, 2], [5, 10], [12, 14]])
+        landmarks = np.array([[-1, 2], [-1, 10], [5, 1], [5, 10]])
         hx = []
         px, py = x
         for i in range(len(landmarks)):
             dist = np.sqrt((px - landmarks[i][0])**2 + (py - landmarks[i][1])**2)
-            angle = np.arctan2(py - landmarks[i][1], px - landmarks[i][0])
+            # angle = np.arctan2(py - landmarks[i][1], px - landmarks[i][0])
+            # angle = (py - landmarks[i][1]) / (px - landmarks[i][0])
+            # hx.append(dist)
             hx.append(dist)
-            hx.append(angle)
         return np.array(hx)
         
 

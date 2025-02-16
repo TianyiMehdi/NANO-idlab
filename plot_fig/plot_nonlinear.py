@@ -12,7 +12,7 @@ plt.rcParams['mathtext.rm'] = 'Times New Roman'
 plt.rcParams['font.size'] = 24
 
 # env = 'SinCos', 'sensor_net', 'Robot', 'Oscillator', 'Vehicle'
-env = 'Toy'
+env = 'Toy_beta'
 
 # Example usIn this subsection, we consider a non-autonomous system with control inputs, which is commonly used in robot localization tasksage
 path_to_results = './results/' + env
@@ -21,6 +21,10 @@ print(data_files.keys())
 
 def get_error(name):
     error = data_files[name]['x_mc'] - data_files[name]['x_hat_mc']
+    return error
+
+def get_error_mean(name):
+    error = np.mean(data_files[name]['x_mc'] - data_files[name]['x_hat_mc'], axis=0)
     return error
 
 def get_rms_error(name, state_index):
@@ -66,10 +70,13 @@ if __name__ == '__main__':
                       showfliers=False)  # 'patch_artist=True' fills the box with color
     for patch, color in zip(box['boxes'], colors):
         patch.set_facecolor(color)
+        patch.set_alpha(0.3)
     for median in box['medians']:
         median.set_color('black')
     means = [np.mean(datapoint) for datapoint in armse_values]
-    plt.plot(range(1, len(armse_values) + 1), means, marker='s', linestyle='--', color='black', label='Mean')
+    # 浅色的框，更重视均值，粗线
+    plt.plot(range(1, len(armse_values) + 1), means, marker='o', 
+             linestyle='--', color='red', label='Mean', linewidth=3, markersize=12)
     plt.xticks(ticks=range(1, len(armse_values) + 1), labels=labels, rotation=45, ha='right')
     plt.ylabel('Root Mean Square Error')
     plt.grid(True)
@@ -96,24 +103,28 @@ if __name__ == '__main__':
     elif 'Localization' in env:
         y_name = [r'$p_x$', r'$p_y$', r'$\phi$']
     else:
-        raise ValueError
+        y_name = [r'$x_1$', r'$x_2$']
 
+    mc_index = 4
     # Now wiener_json_data contains the JSON content, keyed by folder name
-    ekf_error = get_error('EKF')
+    ekf_error = get_error('NANO')
     mc, time_length, num_states = ekf_error.shape
-    error_value = np.mean(ekf_error, axis=0)
+    # error_value = np.mean(ekf_error, axis=0)
+    error_value = ekf_error[mc_index]
     max_error_value = np.max(error_value[20:], axis=0)
     min_error_value = np.min(error_value[20:], axis=0)
     
     pd_list = [[] for _ in range(num_states)]
     for tmp in range(len(labels)):  #
         for i in range(num_states):  # x_dim
-            for j in range(mc):  # mc
-                pd_list[i].append(pd.DataFrame({'Error': get_error(labels[tmp])[j, :time_length, i],
-                                                'Algorithm': labels[tmp],
-                                                'Step': np.arange(time_length),
-                                                'Color': colors[tmp]
-                                                }))
+            # for j in range(mc):  # mc
+            pd_list[i].append(pd.DataFrame(
+            # {'Error': get_error(labels[tmp])[j, :time_length, i],
+                                            {'Error': get_error(labels[tmp])[mc_index, :time_length, i],
+                                            'Algorithm': labels[tmp],
+                                            'Step': np.arange(time_length),
+                                            'Color': colors[tmp]
+                                            }))
     
     for j in range(len(pd_list)):
         if not pd_list[j]:
@@ -131,15 +142,16 @@ if __name__ == '__main__':
         ax1.set_xlabel("Step")
         plt.xlim(1, time_length)
         if max_error_value[j] > 0:
-            y_sup = 1.5 * max_error_value[j]
+            y_sup = 1.0 * max_error_value[j]
         else:
             y_sup = max_error_value[j] / 2
 
         if min_error_value[j] < 0:
-            y_inf = 1.5 * min_error_value[j]
+            y_inf = 1.0 * min_error_value[j]
         else:
             y_inf = min_error_value / 2
 
+        print(y_inf, y_sup)
         plt.ylim(y_inf, y_sup)
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.xticks()
@@ -194,12 +206,12 @@ if __name__ == '__main__':
 
     for tmp in range(len(state_labels)):
         for i in range(num_states):  # x_dim
-            for j in range(mc):  # mc
-                pd_list[i].append(pd.DataFrame({'State': get_state(state_labels[tmp])[j, :time_length, i],
-                                                'Algorithm': state_labels[tmp],
-                                                'Step': np.arange(time_length),
-                                                'Color': state_colors[tmp]
-                                                }))
+            # for j in range(mc):  # mc
+            pd_list[i].append(pd.DataFrame({'State': get_state(state_labels[tmp])[mc_index, :time_length, i],
+                                            'Algorithm': state_labels[tmp],
+                                            'Step': np.arange(time_length),
+                                            'Color': state_colors[tmp]
+                                            }))
 
     for j in range(len(pd_list)):
         if not pd_list[j]:

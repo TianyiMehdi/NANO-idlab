@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Localization",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.1686703765192249,
+        0.23802915275263176,
+        0.05861408878163703
+    ],
+    "time": 0.0002376770134547248,
+    "current_time": "2025-02-16-08-37"
+}

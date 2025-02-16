@@ -5,3 +5,5 @@ from .sin_cos import SinCos
 from .robot import Robot
 from .yau import Yau
 from .toy import Toy
+from .localization import Localization
+from .lorenz import Lorenz

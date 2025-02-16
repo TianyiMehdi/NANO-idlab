@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser.add_argument("--result_dir", default=None, type=str, help="Save dir")
     parser.add_argument("--random_seed", default=42, type=int, help='Number of the random seed')
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
-    parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")
+    parser.add_argument("--steps", default=1000, type=int, help="Number of the steps in each trajectory")
     
     # Parse the arguments
     args = parser.parse_args()
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     x_hat0 = np.array([5., 5., 5.])
     t = np.arange(1, args_dict['steps'] + 1)
-    control_input = 8 * np.cos(t)
+    control_input = 8 * np.cos(t/50)
     data_dict = run_filter(args_dict['N_exp'], args_dict['steps'], 
                            args_dict['model_name'], args_dict['noise_type'], 
                            args_dict['filter_name'], x_hat0, filter_dict,
