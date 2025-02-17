@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # Add arguments
     parser.add_argument("--filter_name", default="PLF", type=str, help="Name of the filter")
     parser.add_argument("--model_name", default="Toy", type=str, help="Name of the model")
-    parser.add_argument("--noise_type", default="Beta", type=str, help="Name of the model")
+    parser.add_argument("--noise_type", default="Gaussian", type=str, help="Name of the model")
     parser.add_argument("--result_dir", default=None, type=str, help="Save dir")
     parser.add_argument("--random_seed", default=42, type=int, help='Number of the random seed')
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")

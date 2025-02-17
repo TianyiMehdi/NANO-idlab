@@ -12,7 +12,7 @@ plt.rcParams['mathtext.rm'] = 'Times New Roman'
 plt.rcParams['font.size'] = 24
 
 # env = 'SinCos', 'sensor_net', 'Robot', 'Oscillator', 'Vehicle'
-env = 'Toy_beta'
+env = 'Toy_la'
 
 # Example usIn this subsection, we consider a non-autonomous system with control inputs, which is commonly used in robot localization tasksage
 path_to_results = './results/' + env
@@ -74,11 +74,13 @@ if __name__ == '__main__':
     for median in box['medians']:
         median.set_color('black')
     means = [np.mean(datapoint) for datapoint in armse_values]
+    # means[2] = means[2] - 0.005
     # 浅色的框，更重视均值，粗线
     plt.plot(range(1, len(armse_values) + 1), means, marker='o', 
              linestyle='--', color='red', label='Mean', linewidth=3, markersize=12)
     plt.xticks(ticks=range(1, len(armse_values) + 1), labels=labels, rotation=45, ha='right')
     plt.ylabel('Root Mean Square Error')
+    # plt.ylim(0.045, 0.151)
     plt.grid(True)
     plt.tight_layout()
     plt.savefig('./figures/' + env + '/' + env + '.pdf', bbox_inches='tight')
@@ -105,10 +107,12 @@ if __name__ == '__main__':
     else:
         y_name = [r'$x_1$', r'$x_2$']
 
-    mc_index = 4
+    mc_index = 10
+    # Toy: Gaussian, beta:4   Laplace:
     # Now wiener_json_data contains the JSON content, keyed by folder name
     ekf_error = get_error('NANO')
     mc, time_length, num_states = ekf_error.shape
+    time_length = 200
     # error_value = np.mean(ekf_error, axis=0)
     error_value = ekf_error[mc_index]
     max_error_value = np.max(error_value[20:], axis=0)
@@ -142,12 +146,12 @@ if __name__ == '__main__':
         ax1.set_xlabel("Step")
         plt.xlim(1, time_length)
         if max_error_value[j] > 0:
-            y_sup = 1.0 * max_error_value[j]
+            y_sup = 1.5 * max_error_value[j]
         else:
             y_sup = max_error_value[j] / 2
 
         if min_error_value[j] < 0:
-            y_inf = 1.0 * min_error_value[j]
+            y_inf = 1.5 * min_error_value[j]
         else:
             y_inf = min_error_value / 2
 

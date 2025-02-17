@@ -26,7 +26,7 @@ if __name__ == "__main__":
     # Filter parameters
     # Gauss, Laplace : 3,   Beta : 2
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
-    parser_filter.add_argument("--max_iter", default=3, type=float, help="Maximum Iteration for iEKF")
+    parser_filter.add_argument("--max_iter", default=2, type=float, help="Maximum Iteration for iEKF")
     args_filter = parser_filter.parse_args()
     filter_dict = vars(args_filter)
 

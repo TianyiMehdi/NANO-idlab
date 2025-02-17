@@ -1,0 +1,17 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Localization",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.15181279005035322,
+        0.12096298727703393,
+        0.0608183445245959
+    ],
+    "time": 0.000645229157490946,
+    "max_iter": 3,
+    "current_time": "2025-02-17-00-00"
+}

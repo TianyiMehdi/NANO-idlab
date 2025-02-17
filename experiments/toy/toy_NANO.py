@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # Add arguments
     parser.add_argument("--filter_name", default="NANO", type=str, help="Name of the filter")
     parser.add_argument("--model_name", default="Toy", type=str, help="Name of the model")
-    parser.add_argument("--noise_type", default="Beta", type=str, help="Name of the model")
+    parser.add_argument("--noise_type", default="Gaussian", type=str, help="Name of the model")
     parser.add_argument("--result_dir", default=None, type=str, help="Save dir")
     parser.add_argument("--random_seed", default=42, type=int, help='Number of the random seed')
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
@@ -24,8 +24,8 @@ if __name__ == "__main__":
     args_dict = vars(args)
 
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
-    parser_filter.add_argument("--n_iterations", default=5, type=int, help="Iterations for NANO")
-    parser_filter.add_argument("--lr", default=0.5, type=float, help="Learning Rate for NANO")
+    parser_filter.add_argument("--n_iterations", default=1, type=int, help="Iterations for NANO")
+    parser_filter.add_argument("--lr", default=0.1, type=float, help="Learning Rate for NANO")
     parser_filter.add_argument("--init_type", default='iekf', type=str, help="Initialization type for Natural Gradient iteration, 'prior', 'laplace', 'iekf', 'ukf'")
     # Gaussian, 1, 0.1 'iekf' 
     # Laplace : 1, 0.1 'ukf'     

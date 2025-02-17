@@ -13,7 +13,7 @@ class UKF(UnscentedKalmanFilter):
             dt = model.dt,
             dim_x = model.dim_x,
             dim_z = model.dim_y,
-            points = MerweScaledSigmaPoints(model.dim_x, alpha=0.3, beta=2.0, kappa=0)
+            points = MerweScaledSigmaPoints(model.dim_x, alpha=1e-3, beta=2.0, kappa=0)
         )
 
         self.Q = model.Q

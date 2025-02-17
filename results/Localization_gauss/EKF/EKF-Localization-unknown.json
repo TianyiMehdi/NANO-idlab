@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Localization",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 1000,
+    "x_rmse": [
+        0.15657666759758018,
+        0.17861026921226306,
+        0.033574328836787515
+    ],
+    "time": 0.00024069604214963257,
+    "current_time": "2025-02-16-22-28"
+}

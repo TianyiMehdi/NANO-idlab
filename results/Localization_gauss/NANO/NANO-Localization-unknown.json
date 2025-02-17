@@ -1,0 +1,20 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Localization",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 1000,
+    "x_rmse": [
+        0.08387262650505498,
+        0.07723360564829093,
+        0.029664696585297454
+    ],
+    "time": 0.004324577195985658,
+    "n_iterations": 1,
+    "lr": 1.0,
+    "init_type": "iekf",
+    "iekf_max_iter": 5,
+    "current_time": "2025-02-16-22-37"
+}

@@ -89,8 +89,16 @@ class Toy(Model):
     
     def jac_f(self, x_hat, u=None):
         return jacobian(lambda x: self.f(x, u))(x_hat)
+
+    def jac_h(self, x):
+        x1, x2, x3 = x
+        return np.array([
+            [x1/10, x2/10, 0],
+            [0, x2/10, x3/10],
+            [x1/10, 0, x3/10]
+        ])
     
-    def jac_h(self, x, epsilon=5e-5):
+    def jac_h_diff(self, x, epsilon=5e-5):
         """
         使用差分法计算向量值函数的 Jacobian 矩阵
         :param x: 输入向量

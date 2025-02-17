@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Localization",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 1000,
+    "x_rmse": [
+        0.09721841332821296,
+        0.09767057599005298,
+        0.030235193161997267
+    ],
+    "time": 0.0006907271813821267,
+    "max_iter": 1,
+    "current_time": "2025-02-16-22-32"
+}
