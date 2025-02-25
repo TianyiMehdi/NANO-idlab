@@ -4,7 +4,7 @@ import autograd.numpy as np
 
 sys.path.append("./")
 from experiments.save_and_plot import save_per_exp
-from experiments.run import run_filter, run_filter_robot
+from experiments.run import run_filter
 
 if __name__ == "__main__":
     # Create the parser

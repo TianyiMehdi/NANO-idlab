@@ -1,0 +1,19 @@
+{
+    "filter_name": "NANO",
+    "model_name": "SinCos",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 500,
+    "x_rmse": [
+        1.0964718419526076,
+        1.0818761779105508
+    ],
+    "time": 0.0013994838240629207,
+    "n_iterations": 5,
+    "lr": 0.5,
+    "init_type": "iekf",
+    "iekf_max_iter": 1,
+    "current_time": "2025-02-17-10-54"
+}

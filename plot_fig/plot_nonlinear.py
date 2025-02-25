@@ -12,7 +12,7 @@ plt.rcParams['mathtext.rm'] = 'Times New Roman'
 plt.rcParams['font.size'] = 24
 
 # env = 'SinCos', 'sensor_net', 'Robot', 'Oscillator', 'Vehicle'
-env = 'Toy_la'
+env = 'Attitude'
 
 # Example usIn this subsection, we consider a non-autonomous system with control inputs, which is commonly used in robot localization tasksage
 path_to_results = './results/' + env
@@ -60,6 +60,8 @@ if __name__ == '__main__':
         armse_plf,
         armse_ggf,
     ]
+    armse_mean = [np.mean([value for value in arr if value <= 8]) for arr in armse_values]
+    print(armse_mean)
 
     # names = ['EKF', 'UKF', 'IEKF', 'PLF', 'NANO']
     labels = ['EKF', 'UKF', 'IEKF', 'PLF', 'NANO']
@@ -104,15 +106,22 @@ if __name__ == '__main__':
         y_name = [r'$\delta$',  r'$\Omega$']
     elif 'Localization' in env:
         y_name = [r'$p_x$', r'$p_y$', r'$\phi$']
+    elif 'Attitude' in env:
+        y_name = ['Roll', 'Pitch', 'Yaw']
     else:
         y_name = [r'$x_1$', r'$x_2$']
 
-    mc_index = 10
+    mc_index = 4
     # Toy: Gaussian, beta:4   Laplace:
+    # Attitude: Gaussian
     # Now wiener_json_data contains the JSON content, keyed by folder name
     ekf_error = get_error('NANO')
     mc, time_length, num_states = ekf_error.shape
     time_length = 200
+    if 'Attitude' in env:
+        start_idx = 0
+    else:
+        start_idx = 0
     # error_value = np.mean(ekf_error, axis=0)
     error_value = ekf_error[mc_index]
     max_error_value = np.max(error_value[20:], axis=0)
@@ -123,12 +132,11 @@ if __name__ == '__main__':
         for i in range(num_states):  # x_dim
             # for j in range(mc):  # mc
             pd_list[i].append(pd.DataFrame(
-            # {'Error': get_error(labels[tmp])[j, :time_length, i],
-                                            {'Error': get_error(labels[tmp])[mc_index, :time_length, i],
-                                            'Algorithm': labels[tmp],
-                                            'Step': np.arange(time_length),
-                                            'Color': colors[tmp]
-                                            }))
+                            {'Error': get_error(labels[tmp])[mc_index, :time_length, i],
+                            'Algorithm': labels[tmp],
+                            'Step': np.arange(start_idx, time_length),
+                            'Color': colors[tmp]
+                            }))
     
     for j in range(len(pd_list)):
         if not pd_list[j]:
@@ -144,7 +152,7 @@ if __name__ == '__main__':
                           palette=palette, linewidth=4, dashes=False, legend=False)
         ax1.set_ylabel(y_name[j]+' Error')
         ax1.set_xlabel("Step")
-        plt.xlim(1, time_length)
+        plt.xlim(2, time_length)
         if max_error_value[j] > 0:
             y_sup = 1.5 * max_error_value[j]
         else:
@@ -156,6 +164,7 @@ if __name__ == '__main__':
             y_inf = min_error_value / 2
 
         print(y_inf, y_sup)
+        # plt.ylim(-0.5, 0.5) # Laplace Attitude
         plt.ylim(y_inf, y_sup)
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.xticks()
@@ -182,7 +191,7 @@ if __name__ == '__main__':
                 rmse_max = this_rmse_max
 
             # 准备用于绘图的数据
-            steps = np.arange(time_length)
+            steps = np.arange(start_idx, time_length)
 
             plt.plot(steps, rmse[:time_length], label=filter_name, color=colors[filter_idx], linewidth=4)
 
@@ -213,7 +222,7 @@ if __name__ == '__main__':
             # for j in range(mc):  # mc
             pd_list[i].append(pd.DataFrame({'State': get_state(state_labels[tmp])[mc_index, :time_length, i],
                                             'Algorithm': state_labels[tmp],
-                                            'Step': np.arange(time_length),
+                                            'Step': np.arange(start_idx, time_length),
                                             'Color': state_colors[tmp]
                                             }))
 
@@ -231,7 +240,7 @@ if __name__ == '__main__':
                           palette=palette, linewidth=2, dashes=False, legend=False)
         ax1.set_ylabel(y_name[j])
         ax1.set_xlabel("Step")
-        plt.xlim(1, time_length)
+        plt.xlim(2, time_length)
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.yticks()
         plt.xticks()

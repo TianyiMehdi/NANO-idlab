@@ -12,6 +12,7 @@ class NANO:
 
     def __init__(self, model, **filter_dict):    
         self.model = model
+        self.model_name = type(model).__name__
         self.dim_x = model.dim_x
         self.dim_y = model.dim_y    
         self.x = model.x0
@@ -27,6 +28,7 @@ class NANO:
 
         self.n_iterations = filter_dict['n_iterations']
         self.points = JulierSigmaPoints(self.dim_x, kappa=0)
+        # self.points = MerweScaledSigmaPoints(self.dim_x, alpha=0.3, beta=2.0, kappa=0)
         # self.sigmas_f = np.zeros((self.points.num_sigmas, self.dim_x))
         self.x_prior = model.x0
         self.P_prior = model.P0
@@ -68,6 +70,8 @@ class NANO:
             K = PHT @ np.linalg.inv(S)
             x_hat = x_prior + K @ v
         
+        # if self.model_name == 'Attitude':
+        #     x_hat = x_hat / np.linalg.norm(x_hat)
         x_hat_posterior = x_hat
         I_KH = self._I - K @ H
         P_posterior = (I_KH @ P_prior @ I_KH.T) + (K @ self.R @ K.T)
@@ -90,6 +94,8 @@ class NANO:
 
         x = x + np.dot(K, y)
         P = P - np.dot(K, np.dot(S, K.T))
+        # if self.model_name == 'Attitude':
+        #     x = x / np.linalg.norm(x)
         return x, np.linalg.inv(P)
     
     def cross_variance(self, x, z, sigmas_f, sigmas_h):
@@ -106,6 +112,7 @@ class NANO:
         return Pxz
     
     def predict(self, u=None):
+        # points = MerweScaledSigmaPoints(self.dim_x, alpha=0.3, beta=2.0, kappa=0)
         sigmas = self.points.sigma_points(self.x, self.P)
 
         self.sigmas_f = np.zeros((len(sigmas), self.dim_x))
@@ -148,7 +155,7 @@ class NANO:
             P_inv_next = P_inv_prior + lr * E_hessian
             P_next = np.linalg.inv(P_inv_next)
             x_hat_next = x_hat - lr*(P_next @ P_inv @ cal_mean(lambda x: (x - x_hat) * self.loss_func(x, y), x_hat, P, self.points) + P_next @ P_inv_prior @ (x_hat - x_hat_prior))
-
+            
             kld = kl_divergence(x_hat, P, x_hat_next, P_next)
             if kld < self.threshold:
                 P_inv = P_inv_next.copy()
@@ -157,6 +164,9 @@ class NANO:
 
             P_inv = P_inv_next.copy()
             x_hat = x_hat_next.copy()
+        
+        # if self.model_name == 'Attitude':
+        #     x_hat = x_hat / np.linalg.norm(x_hat)
             
         self.x = x_hat
         self.P = np.linalg.inv(P_inv)

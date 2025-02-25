@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Attitude",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 100,
+    "steps": 200,
+    "x_rmse": [
+        0.8063142349153616,
+        0.4676452476578506,
+        1.271043802164735
+    ],
+    "time": 0.00021318129321302946,
+    "current_time": "2025-02-23-10-48"
+}

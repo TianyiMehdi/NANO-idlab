@@ -1,0 +1,17 @@
+{
+    "filter_name": "PLF",
+    "model_name": "Attitude",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.31757754392894944,
+        0.16415048528268908,
+        0.4395008904000514
+    ],
+    "time": 0.0003849159561580778,
+    "max_iter": 0,
+    "current_time": "2025-02-22-23-09"
+}

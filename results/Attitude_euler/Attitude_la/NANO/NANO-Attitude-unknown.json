@@ -1,0 +1,20 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Attitude",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.12352690717305258,
+        0.10916418919864507,
+        0.11466640825312961
+    ],
+    "time": 0.001694153661104902,
+    "n_iterations": 1,
+    "lr": 1.0,
+    "init_type": "iekf",
+    "iekf_max_iter": 1,
+    "current_time": "2025-02-23-16-57"
+}

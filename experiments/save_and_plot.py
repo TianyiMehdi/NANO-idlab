@@ -43,6 +43,8 @@ def save_per_exp(data_dict, args_dict, filter_dict):
     x_mc = data_dict['x_mc']
     x_hat_mc = data_dict['x_hat_mc']
     x_rmse = calculate_rmse(x_mc, x_hat_mc)
+    # if args_dict['model_name'] == 'Attitude':
+    #     x_rmse = (180 / np.pi) * x_rmse
     print('RMSE:', x_rmse)
     print('time:', data_dict['mean_time'])
     data_dict['x_rmse'] = x_rmse

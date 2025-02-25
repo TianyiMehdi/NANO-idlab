@@ -1,0 +1,17 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Attitude",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.4390717828364333,
+        0.15996212764053247,
+        0.7569606234401844
+    ],
+    "time": 0.0011202375852881964,
+    "max_iter": 3,
+    "current_time": "2025-02-25-10-18"
+}

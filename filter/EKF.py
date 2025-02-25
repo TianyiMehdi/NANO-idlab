@@ -1,5 +1,6 @@
 from filterpy.kalman import ExtendedKalmanFilter
 import autograd.numpy as np
+from .utils import quat_mul
 
 
 class EKF(ExtendedKalmanFilter):
@@ -7,6 +8,7 @@ class EKF(ExtendedKalmanFilter):
         super().__init__(dim_x=model.dim_x,
                          dim_z=model.dim_y)
         
+        self.model_name = type(model).__name__
         self.f = model.f
         self.h = model.h
         self.jac_f = model.jac_f
@@ -33,6 +35,8 @@ class EKF(ExtendedKalmanFilter):
         self.S = H @ PHT + self.R
         self.K = PHT @ np.linalg.inv(self.S)
         self.x = self.x + self.K @ (y - hx)
+        # if self.model_name == 'Attitude':
+        #     self.x = self.x / np.linalg.norm(self.x)
         I_KH = self._I - self.K @ H
         self.P = (I_KH @ self.P @ I_KH.T) + (self.K @ self.R @ self.K.T)
         self.x_post = self.x.copy()

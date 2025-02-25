@@ -1,0 +1,16 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Attitude",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.15817720718752948,
+        0.09097968015084273,
+        0.20108579446779878
+    ],
+    "time": 0.0003048988846928992,
+    "current_time": "2025-02-23-00-04"
+}

@@ -1,0 +1,16 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Attitude",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.44087768601896726,
+        0.16034791101424364,
+        0.7593288239989873
+    ],
+    "time": 0.0005932548896751212,
+    "current_time": "2025-02-25-10-18"
+}

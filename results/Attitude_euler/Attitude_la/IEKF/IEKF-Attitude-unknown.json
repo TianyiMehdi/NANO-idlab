@@ -1,0 +1,17 @@
+{
+    "filter_name": "IEKF",
+    "model_name": "Attitude",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.12352503514718251,
+        0.1091641240191519,
+        0.11466331116530737
+    ],
+    "time": 0.0004991545509453395,
+    "max_iter": 5,
+    "current_time": "2025-02-23-16-55"
+}

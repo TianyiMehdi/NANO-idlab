@@ -13,9 +13,11 @@ class UKF(UnscentedKalmanFilter):
             dt = model.dt,
             dim_x = model.dim_x,
             dim_z = model.dim_y,
-            points = MerweScaledSigmaPoints(model.dim_x, alpha=1e-3, beta=2.0, kappa=0)
+            points = MerweScaledSigmaPoints(model.dim_x, alpha=0.3, beta=2.0, kappa=0)
+            # points = JulierSigmaPoints(model.dim_x, kappa=0)
         )
 
+        self.model_name = type(model).__name__
         self.Q = model.Q
         self.R = model.R
 
@@ -37,6 +39,8 @@ class UKF(UnscentedKalmanFilter):
         #and pass sigmas through the unscented transform to compute prior
         self.x, self.P = UT(self.sigmas_f, self.Wm, self.Wc, self.Q,
                         self.x_mean, self.residual_x)
+        # if self.model_name == 'Attitude':
+        #     self.x = self.x / np.linalg.norm(self.x)
         # self.sigmas_f = self.points_fn.sigma_points(self.x, self.P)
         
         self.x_prior = np.copy(self.x)
@@ -56,6 +60,8 @@ class UKF(UnscentedKalmanFilter):
 
         self.x = self.x + dot(self.K, self.y)
         self.P = self.P - dot(self.K, dot(self.S, self.K.T))
+        # if self.model_name == 'Attitude':
+        #     self.x = self.x / np.linalg.norm(self.x)
 
         # save measurement and posterior state
         self.z = deepcopy(z)

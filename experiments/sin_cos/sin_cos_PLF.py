@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser.add_argument("--result_dir", default=None, type=str, help="Save dir")
     parser.add_argument("--random_seed", default=42, type=int, help='Number of the random seed')
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
-    parser.add_argument("--steps", default=200, type=int, help="Number of the steps in each trajectory")
+    parser.add_argument("--steps", default=500, type=int, help="Number of the steps in each trajectory")
     
     # Parse the arguments
     args = parser.parse_args()

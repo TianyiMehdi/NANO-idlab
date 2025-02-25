@@ -20,6 +20,7 @@ class PLF(UnscentedKalmanFilter):
             points = MerweScaledSigmaPoints(model.dim_x, alpha=0.3, beta=2.0, kappa=0)
         )
 
+        self.model_name = type(model).__name__
         self.Q = model.Q
         self.R = model.R
 
@@ -72,8 +73,11 @@ class PLF(UnscentedKalmanFilter):
 
             x_hat = self.x_prior + self.P_prior @ H.T @ np.linalg.inv(H @ self.P_prior @ H.T + Omega + self.R) @ (z - H @ self.x_prior - b)
             P_hat = self.P_prior - self.P_prior @ H.T @ np.linalg.inv(H @ self.P_prior @ H.T + Omega + self.R) @ H @ self.P_prior
+            # x_hat = x_hat / np.linalg.norm(x_hat)
             sigmas = self.points_fn.sigma_points(x_hat, P_hat)
         
+        # if self.model_name == 'Attitude':
+        #     x_hat = x_hat / np.linalg.norm(x_hat)
         self.x = x_hat
         self.P = P_hat
         self.x_post = self.x.copy()

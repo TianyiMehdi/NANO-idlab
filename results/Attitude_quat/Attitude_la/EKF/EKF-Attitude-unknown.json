@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Attitude",
+    "noise_type": "Laplace",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.12188214537234185,
+        0.06085557874675354,
+        0.18198101698918495
+    ],
+    "time": 0.00021208413608981463,
+    "current_time": "2025-02-22-23-52"
+}
