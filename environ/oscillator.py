@@ -23,7 +23,7 @@ class Oscillator(Model):
         self.noise_type = noise_type
         
         if noise_type == 'Gaussian':
-            self.Q = 0 * np.eye(self.dim_x)
+            self.Q = 0.5 * np.eye(self.dim_x)
             self.R = np.eye(self.dim_y)
 
         elif noise_type == 'Beta':       

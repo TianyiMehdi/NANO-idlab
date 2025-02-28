@@ -43,16 +43,16 @@ if __name__ == '__main__':
     '''
     1. Box Plot
     '''
-    armse_ekf = np.mean(np.sqrt(np.mean((data_files['EKF']['x_mc'] -
-                                         data_files['EKF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_ukf = np.mean(np.sqrt(np.mean((data_files['UKF']['x_mc'] -
-                                         data_files['UKF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_IEKF = np.mean(np.sqrt(np.mean((data_files['IEKF']['x_mc'] -
-                                          data_files['IEKF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_plf = np.mean(np.sqrt(np.mean((data_files['PLF']['x_mc'] -
-                                         data_files['PLF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_ggf = np.mean(np.sqrt(np.mean((data_files['NANO']['x_mc'] -
-                                         data_files['NANO']['x_hat_mc']) ** 2, axis=(1))), axis=1)
+    armse_ekf = np.sqrt(np.mean(np.mean((data_files['EKF']['x_mc'] -
+                                         data_files['EKF']['x_hat_mc']) ** 2, axis=(1)), axis=1))
+    armse_ukf = np.sqrt(np.mean(np.mean((data_files['UKF']['x_mc'] -
+                                         data_files['UKF']['x_hat_mc']) ** 2, axis=(1)), axis=1))
+    armse_IEKF = np.sqrt(np.mean(np.mean((data_files['IEKF']['x_mc'] -
+                                          data_files['IEKF']['x_hat_mc']) ** 2, axis=(1)), axis=1))
+    armse_plf = np.sqrt(np.mean(np.mean((data_files['PLF']['x_mc'] -
+                                         data_files['PLF']['x_hat_mc']) ** 2, axis=(1)), axis=1))
+    armse_ggf = np.sqrt(np.mean(np.mean((data_files['NANO']['x_mc'] -
+                                         data_files['NANO']['x_hat_mc']) ** 2, axis=(1)), axis=1))
     armse_values = [
         armse_ekf,
         armse_ukf,
@@ -85,8 +85,7 @@ if __name__ == '__main__':
     # plt.ylim(0.045, 0.151)
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('./figures/' + env + '/' + env + '.pdf', bbox_inches='tight')
-
+    plt.savefig('./figures/' + env + '/' + env + '.png', bbox_inches='tight')
 
     '''
     2. Error Curve Plot
@@ -154,22 +153,22 @@ if __name__ == '__main__':
         ax1.set_xlabel("Step")
         plt.xlim(2, time_length)
         if max_error_value[j] > 0:
-            y_sup = 1.5 * max_error_value[j]
+            y_sup = 1.25 * max_error_value[j]
         else:
             y_sup = max_error_value[j] / 2
 
         if min_error_value[j] < 0:
-            y_inf = 1.5 * min_error_value[j]
+            y_inf = 1.25 * min_error_value[j]
         else:
             y_inf = min_error_value / 2
 
         print(y_inf, y_sup)
-        # plt.ylim(-0.5, 0.5) # Laplace Attitude
+        # plt.ylim(-2.2, 2.2) # Laplace Attitude
         plt.ylim(y_inf, y_sup)
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.xticks()
         plt.yticks()
-        plt.savefig('./figures/' + env + '/' + env + '_error_' + str(j+1) + '.pdf', bbox_inches='tight')
+        plt.savefig('./figures/' + env + '/' + env + '_error_' + str(j+1) + '.png', bbox_inches='tight')
 
     
     '''
@@ -202,7 +201,7 @@ if __name__ == '__main__':
         plt.ylim(0, rmse_max*1.3)
 
         plt.tight_layout()
-        plt.savefig('./figures/' + env + '/' + env + '_rmse_' + str(state_index + 1) + '.pdf', bbox_inches='tight')
+        plt.savefig('./figures/' + env + '/' + env + '_rmse_' + str(state_index + 1) + '.png', bbox_inches='tight')
     
 
     '''
@@ -244,7 +243,7 @@ if __name__ == '__main__':
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.yticks()
         plt.xticks()
-        plt.savefig('./figures/' + env + '/' + env + '_state_' + str(j+1) + '.pdf', bbox_inches='tight')
+        plt.savefig('./figures/' + env + '/' + env + '_state_' + str(j+1) + '.png', bbox_inches='tight')
     
     
     '''
@@ -257,4 +256,4 @@ if __name__ == '__main__':
     ax2 = f2.add_axes([0, 0, 1, 1])
     ax2.legend(handles=legend_elements, loc='center', ncol=3)
     ax2.axis('off')
-    plt.savefig('./figures/legend.pdf', bbox_inches='tight')
+    plt.savefig('./figures/legend.png', bbox_inches='tight')
