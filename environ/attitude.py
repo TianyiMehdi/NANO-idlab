@@ -27,29 +27,12 @@ class Attitude(Model):
         # self.r1 = np.array([1, 0, 0])
         # self.r2 = np.array([0, 1, 0])
 
-        if noise_type == 'Gaussian':
-            # 1e-4 1e-2
-            self.Q = 1e-5 * np.eye(self.dim_x) 
-            self.R = 1e-4 * np.eye(self.dim_y)
-
-        elif noise_type == 'Beta':       
-            self.f_alpha = 5.0
-            self.f_beta = 100.0
-            self.h_alpha = 5.0
-            self.h_beta = 30.0
-
-            # self.Q = 0.03 * np.eye(self.dim_x)
-            self.Q = get_beta_cov(self.f_alpha, self.f_beta) * np.eye(self.dim_x) 
-            self.R = get_beta_cov(self.h_alpha, self.h_beta) * np.eye(self.dim_y) 
-        
-        elif noise_type == 'Laplace':
-            self.f_scale = 1e-3
-            self.h_scale = 1e-3
-            self.Q = self.f_scale * np.eye(self.dim_x)
-            self.R = self.h_scale * np.eye(self.dim_y)
-        
-        else:
-            raise ValueError
+        # if noise_type == 'Gaussian':
+        self.f_scale = 1e-5
+        self.h_alpha = 1.2
+        self.h_beta = 1.5
+        self.Q = self.f_scale * np.eye(self.dim_x) 
+        self.R = 1e-4 * np.eye(self.dim_y)
 
     def f(self, x, u=None):
         dt = self.dt
@@ -117,41 +100,21 @@ class Attitude(Model):
         return jacobian
     
     def f_withnoise(self, x, u=None):
-        if self.noise_type == 'Gaussian':
-            x_noise = self.f(x, u) + np.random.multivariate_normal(mean=np.zeros(self.dim_x), cov=self.Q)
-            # print(np.linalg.norm(x_noise))
-            # x_noise = x_noise / np.linalg.norm(x_noise)
-            return x_noise
-        
-        elif self.noise_type == 'Beta':
-            noise = np.random.beta(self.f_alpha, self.f_beta, self.dim_x)
-            mean = get_beta_mean(self.f_alpha, self.f_beta)
-            noise = noise - mean
-            return self.f(x, u) + noise
-        
-        elif self.noise_type == 'Laplace':
-            return self.f(x, u) + np.random.laplace(loc=0, scale=self.f_scale, size=(self.dim_x, ))
-
+        prob = np.random.rand()
+        if prob <= 0.9:
+            scale = self.f_scale  # 95%概率使用R
         else:
-            raise ValueError
+            scale = 1000 * self.f_scale
+        return self.f(x, u) + np.random.laplace(loc=0, scale=scale, size=(self.dim_x, ))
     
     def h_withnoise(self, x):
-        if self.noise_type == 'Gaussian':
-            prob = np.random.rand()
-            if prob <= 0.9:
-                cov = self.R  # 95%概率使用R
-            else:
-                cov = 1000 * self.R
+        prob = np.random.rand()
+        if prob <= 0.85:
+            cov = self.R  # 95%概率使用R
             return self.h(x) + np.random.multivariate_normal(mean=np.zeros(self.dim_y), cov=cov)
-        
-        elif self.noise_type == 'Beta':
+        else:
             noise = np.random.beta(self.h_alpha, self.h_beta, self.dim_y)
             mean = get_beta_mean(self.h_alpha, self.h_beta)
             noise = noise - mean
             return self.h(x) + noise
         
-        elif self.noise_type == 'Laplace':
-            return self.h(x) + np.random.laplace(loc=0, scale=self.h_scale, size=(self.dim_y, ))
-        
-        else:
-            raise ValueError
