@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # Add arguments
     parser.add_argument("--filter_name", default="IEKF", type=str, help="Name of the filter")
     parser.add_argument("--model_name", default="GrowthModel", type=str, help="Name of the model")
-    parser.add_argument("--noise_type", default="Laplace", type=str, help="Name of the model")
+    parser.add_argument("--noise_type", default="Gaussian", type=str, help="Name of the model")
     parser.add_argument("--result_dir", default=None, type=str, help="Save dir")
     parser.add_argument("--random_seed", default=42, type=int, help='Number of the random seed')
     parser.add_argument("--N_exp", default=50, type=int, help="Number of the MC experiments")
@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # Filter parameters
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
-    parser_filter.add_argument("--max_iter", default=1, type=float, help="Maximum Iteration for iEKF")
+    parser_filter.add_argument("--max_iter", default=3, type=float, help="Maximum Iteration for iEKF")
     args_filter = parser_filter.parse_args()
     filter_dict = vars(args_filter)
 
