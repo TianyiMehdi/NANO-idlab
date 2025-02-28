@@ -1,5 +1,5 @@
-import autograd.numpy as np
-from autograd.numpy import sin, cos
+import numpy as np
+from numpy import sin, cos
 
 def skew(theta):
     theta_hat = np.array([
@@ -58,7 +58,6 @@ def quat_inv(q):
     n = np.linalg.norm(q)
     return quat_conj(q) / n**2
 
-# 5. 四元数表示旋转, 左右四元数矩阵，与另一种转换到旋转矩阵的方式
 def quat_L(q):
     qw, x, y, z = q
     qv = np.array([x, y, z])

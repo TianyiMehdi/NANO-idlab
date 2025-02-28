@@ -1,4 +1,4 @@
-import autograd.numpy as np
+import numpy as np
 from .model import Model
 from .utils import get_beta_mean, get_beta_cov
 
@@ -42,7 +42,7 @@ class Oscillator(Model):
             self.R = self.h_scale * np.eye(self.dim_y)
         
         else:
-            raise ValueError
+            raise NotImplementedError
 
     def f(self, x, u=None):
         return self.F @ x
@@ -68,6 +68,9 @@ class Oscillator(Model):
         
         elif self.noise_type == 'Laplace':
             return self.f(x, u) + np.random.laplace(loc=0, scale=self.f_scale, size=(self.dim_x, ))
+        
+        else:
+            raise NotImplementedError
     
     def h_withnoise(self, x):
         if self.noise_type == 'Gaussian':
@@ -81,3 +84,6 @@ class Oscillator(Model):
         
         elif self.noise_type == 'Laplace':
             return self.h(x) + np.random.laplace(loc=0, scale=self.h_scale, size=(self.dim_y, ))
+        
+        else:
+            raise NotImplementedError

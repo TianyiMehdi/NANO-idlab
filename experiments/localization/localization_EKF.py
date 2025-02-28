@@ -1,6 +1,6 @@
 import sys
 import argparse
-import autograd.numpy as np
+import numpy as np
 
 sys.path.append("./")
 from experiments.save_and_plot import save_per_exp

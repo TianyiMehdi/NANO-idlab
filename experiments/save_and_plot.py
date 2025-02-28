@@ -56,7 +56,7 @@ def save_per_exp(data_dict, args_dict, filter_dict):
     current_time = datetime.now().strftime("%Y-%m-%d-%H-%M")
     args_dict['current_time'] = current_time
     
-    model_name = args_dict['model_name']
+    model_name = args_dict['model_name'] + '_' + args_dict['noise_type']
     filter_name = args_dict['filter_name']
     # Create a directory named after the current date and time
     if data_dir is None:
@@ -75,7 +75,6 @@ def save_per_exp(data_dict, args_dict, filter_dict):
     # Convert the data dictionary to arrays and save to an NPZ file in the created directory
     np.savez(os.path.join(data_dir, data_file_name), **data_dict)
 
-    plot_state_error(data_dir, args_dict['filter_name'], **data_dict)
     plot_state_rmse_error(data_dir, args_dict['filter_name'], **data_dict)
     plot_state(data_dir, args_dict['filter_name'], **data_dict)
 
@@ -90,46 +89,28 @@ def plot_state(data_dir, filter_name, **data_dict):
     # 使用 Seaborn 的样式
     plt.style.use(f"{directory_path}/style.mpl")
 
-    mc = x_mc.shape[0]
     for k in range(10):
     # 对每个状态绘制 x_mc 和 x_hat_mc 的均值曲线
         for state_index in range(num_states):
-            # 计算 x_mc 和 x_hat_mc 的均值和标准差
-            x_mc_mean = x_mc[k, :, state_index]
-            # x_mc_std = x_mc[:, :, state_index].std(axis=0)
-            x_hat_mc_mean = x_hat_mc[k, :, state_index]
-            # x_hat_mc_std = x_hat_mc[:, :, state_index].std(axis=0)
+            x_mc_sample = x_mc[k, :, state_index]
+            x_hat_mc_sample = x_hat_mc[k, :, state_index]
 
             # 准备用于 Seaborn 绘图的数据
             data = pd.DataFrame({
                 'Step': np.arange(num_steps),
-                'x_mc_mean': x_mc_mean,
-                # 'x_mc_std': x_mc_std,
-                'x_hat_mc_mean': x_hat_mc_mean,
-                # 'x_hat_mc_std': x_hat_mc_std
+                'x_mc': x_mc_sample,
+                'x_hat_mc': x_hat_mc_sample,
             })
 
             # 绘制均值曲线（带标准差）
             plt.figure(figsize=(8, 6))
-            sns.lineplot(x='Step', y='x_mc_mean', data=data, label='True', ci=None)
-            sns.lineplot(x='Step', y='x_hat_mc_mean', data=data, label='Estimate', ci=None)
-
-            # # 填充标准差区域
-            # plt.fill_between(data['Step'], 
-            #                 data['x_mc_mean'] - data['x_mc_std'], 
-            #                 data['x_mc_mean'] + data['x_mc_std'], 
-            #                 color='blue', alpha=0.2)
-            # plt.fill_between(data['Step'], 
-            #                 data['x_hat_mc_mean'] - data['x_hat_mc_std'], 
-            #                 data['x_hat_mc_mean'] + data['x_hat_mc_std'], 
-            #                 color='orange', alpha=0.2)
+            sns.lineplot(x='Step', y='x_mc', data=data, label='True', ci=None)
+            sns.lineplot(x='Step', y='x_hat_mc', data=data, label='Estimate', ci=None)
 
             plt.xlabel("Step")
             plt.ylabel(r'$x_{}$ Value'.format(state_index + 1))  # 使用 TeX 公式
             plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
             plt.xlim(0, num_steps - 1)
-            # plt.xlim(50, 100)
-
 
             # 添加图例
             plt.legend()
@@ -137,7 +118,6 @@ def plot_state(data_dir, filter_name, **data_dict):
             # 保存图像
             plt.tight_layout()
             plt.savefig(os.path.join(data_dir, f'{filter_name}_mc_{k}_state_{state_index + 1}_comparison.png'))
-            # plt.close()
 
 
 def plot_state_rmse_error(data_dir, filter_name, **data_dict):
@@ -172,44 +152,6 @@ def plot_state_rmse_error(data_dir, filter_name, **data_dict):
         plt.tight_layout()
         plt.savefig(os.path.join(data_dir, f'{filter_name}_state_{state_index + 1}_rmse.png'))
         plt.close()
-
-def plot_state_error(data_dir, filter_name, **data_dict):
-    x_mc = data_dict['x_mc']
-    x_hat_mc = data_dict['x_hat_mc']
-    num_experiments, num_steps, num_states = x_mc.shape
-
-    # 使用 Seaborn 的样式
-    plt.style.use(f"{directory_path}/style.mpl")
-
-    # 对每个状态绘制一个误差图
-    for state_index in range(num_states):
-        error = x_mc[:, :, state_index] - x_hat_mc[:, :, state_index]
-
-        # 计算误差的均值和标准差
-        error_mean = error.mean()
-        error_std = error.std()
-
-        # 准备用于 Seaborn 绘图的数据
-        data = pd.DataFrame({
-            'Step': np.tile(np.arange(num_steps), num_experiments),
-            'Error': error.flatten()
-        })
-
-        # 绘制误差线图
-        plt.figure(figsize=(8, 6))
-        sns.lineplot(x='Step', y='Error', data=data, ci='sd')
-
-        plt.xlabel("Step")
-        plt.ylabel(r'$x_{}$ Error'.format(state_index + 1))  # 使用 TeX 公式
-        plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
-        plt.ylim(1.5 * (error_mean - error_std), 1.5 * (error_mean + error_std))  # 使用均值 ± sigma
-        plt.xlim(0, num_steps - 1)
-
-        # 保存图像
-        plt.tight_layout()
-        plt.savefig(os.path.join(data_dir, f'{filter_name}_state_{state_index + 1}_error.png'))
-        plt.close()
-
 
 def plot_box_methods(data_dicts):
     # box plot

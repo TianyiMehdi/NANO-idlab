@@ -3,156 +3,138 @@ import seaborn as sns
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import Line2D
-from draw_utils import read_npz_files_in_s_folders, read_json_from_folders
+from draw_utils import read_npz_files_in_s_folders, read_json_from_folders, calculate_rmse, y_name_dict, get_error, get_state, get_rms_error
+from matplotlib import font_manager
+import os
+
+simsun = font_manager.FontProperties(fname='C:/Windows/Fonts/simsun.ttc')
+
+# 1. Set the parameters
+language = 'English' # 'Chinese'
+## env = 'SequenceForcasting', 'Localization', 'Oscillator', 'Attitude', 'GrowthModel'
+env_ori = 'Oscillator'
+## noise_type = 'Gaussian', 'Laplace', 'Beta'
+noise_type = 'Beta'
+env = env_ori + '_' + noise_type
+font_size_rmse = 24
+font_size = 48
+
+if 'Oscillator' in env:
+    method_names = ['KF', 'UKF', 'NANO']
+    colors = {'KF': 'lightblue', 'UKF': 'C0', 'NANO': 'C3'}
+
+else:
+    method_names = ['EKF', 'UKF', 'IEKF', 'PLF', 'NANO']
+    colors = {'EKF': 'lightblue', 'UKF': 'C0', 'IEKF': 'C1', 'PLF': 'C2', 'NANO': 'C3'}
+
+mc_index = 4
+time_length = 200
 
 
 plt.rcParams['font.family'] = 'Times New Roman'
 plt.rcParams['mathtext.fontset'] = 'stix'
 plt.rcParams['mathtext.rm'] = 'Times New Roman'
-plt.rcParams['font.size'] = 24
+plt.rcParams['font.size'] = font_size_rmse 
 
-# env = 'SinCos', 'sensor_net', 'Robot', 'Oscillator', 'Vehicle'
-env = 'Attitude'
 
-# Example usIn this subsection, we consider a non-autonomous system with control inputs, which is commonly used in robot localization tasksage
-path_to_results = './results/' + env
-data_files = read_npz_files_in_s_folders(path_to_results)
-print(data_files.keys())
 
-def get_error(name):
-    error = data_files[name]['x_mc'] - data_files[name]['x_hat_mc']
-    return error
-
-def get_error_mean(name):
-    error = np.mean(data_files[name]['x_mc'] - data_files[name]['x_hat_mc'], axis=0)
-    return error
-
-def get_rms_error(name, state_index):
-    x_mc = data_files[name]['x_mc']
-    x_hat_mc = data_files[name]['x_hat_mc']
-    rms_error = np.sqrt(np.mean((x_mc[:, :, state_index] - x_hat_mc[:, :, state_index])**2, axis=0))
-    return rms_error
-
-def get_state(name):
-    if name == 'True':
-        return data_files['NANO']['x_mc']
-    else:
-        return data_files[name]['x_hat_mc']
 
 if __name__ == '__main__':
+    # 2. Load data
+    path_to_results = './results/' + env
+    data_files = read_npz_files_in_s_folders(path_to_results)
+    print('Methods: ', data_files.keys())
+    if set(method_names) != set(data_files.keys()):
+        raise ValueError
+    
+    # 3. Plot figure
+
     '''
     1. Box Plot
     '''
-    armse_ekf = np.mean(np.sqrt(np.mean((data_files['EKF']['x_mc'] -
-                                         data_files['EKF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_ukf = np.mean(np.sqrt(np.mean((data_files['UKF']['x_mc'] -
-                                         data_files['UKF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_IEKF = np.mean(np.sqrt(np.mean((data_files['IEKF']['x_mc'] -
-                                          data_files['IEKF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_plf = np.mean(np.sqrt(np.mean((data_files['PLF']['x_mc'] -
-                                         data_files['PLF']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_ggf = np.mean(np.sqrt(np.mean((data_files['NANO']['x_mc'] -
-                                         data_files['NANO']['x_hat_mc']) ** 2, axis=(1))), axis=1)
-    armse_values = [
-        armse_ekf,
-        armse_ukf,
-        armse_IEKF,
-        armse_plf,
-        armse_ggf,
-    ]
-    armse_mean = [np.mean([value for value in arr if value <= 8]) for arr in armse_values]
-    print(armse_mean)
-
-    # names = ['EKF', 'UKF', 'IEKF', 'PLF', 'NANO']
-    labels = ['EKF', 'UKF', 'IEKF', 'PLF', 'NANO']
-    colors = ['lightblue'] + ['C0'] + ['C1'] + ['C2'] + ['C3']
+    rmse_dict = dict()
+    for method in method_names:
+        x_mc = data_files[method]['x_mc']
+        x_hat_mc = data_files[method]['x_hat_mc']
+        rmse = calculate_rmse(x_mc, x_hat_mc) 
+        
+        rmse_dict[method] = rmse
+    
+    rmse_values = rmse_dict.values()
+        
     plt.figure(figsize=(12, 8))
-    # plt.yscale('log')
-    box = plt.boxplot(armse_values, vert=True, patch_artist=True,
-                      showfliers=False)  # 'patch_artist=True' fills the box with color
-    for patch, color in zip(box['boxes'], colors):
+    box = plt.boxplot(rmse_values, vert=True, patch_artist=True, showfliers=False)
+    for patch, color in zip(box['boxes'], colors.values()):
         patch.set_facecolor(color)
         patch.set_alpha(0.3)
     for median in box['medians']:
         median.set_color('black')
-    means = [np.mean(datapoint) for datapoint in armse_values]
-    # means[2] = means[2] - 0.005
-    # 浅色的框，更重视均值，粗线
-    plt.plot(range(1, len(armse_values) + 1), means, marker='o', 
+        
+    armse = [np.mean(datapoint) for datapoint in rmse_values]
+    plt.plot(range(1, len(armse) + 1), armse, marker='o', 
              linestyle='--', color='red', label='Mean', linewidth=3, markersize=12)
-    plt.xticks(ticks=range(1, len(armse_values) + 1), labels=labels, rotation=45, ha='right')
-    plt.ylabel('Root Mean Square Error')
-    # plt.ylim(0.045, 0.151)
+    plt.xticks(ticks=range(1, len(armse) + 1), labels=method_names, rotation=0, ha='right')
+    
+    if language == 'English':
+        plt.ylabel('Root Mean Square Error')
+    elif language == 'Chinese':
+        plt.ylabel('均方根误差', fontproperties=simsun, fontsize= font_size_rmse)
+        
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('./figures/' + env + '/' + env + '.pdf', bbox_inches='tight')
+    save_path = './figures/' + env + '/'
+    file_name = env + '.pdf'
 
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
 
+    plt.savefig(save_path + file_name, bbox_inches='tight')
+        
+        
     '''
     2. Error Curve Plot
     '''
-    plt.rcParams['font.size'] = 48
+    plt.rcParams['font.size'] = font_size
+    
     json_data = read_json_from_folders(path_to_results)
+    y_name = y_name_dict[env_ori]
+    nano_error = get_error('NANO', data_files)
+    mc, _, num_states = nano_error.shape
+    
 
-    if 'SinCos' in env:
-        y_name = [r'$x_1$', r'$x_2$']
-    elif 'Robot' in env:
-        y_name = [r'$p_x$',  r'$p_y$']
-    elif 'Lorenz' in env or 'Toy' in env:
-        y_name = [r'$x_1$', r'$x_2$', r'$x_3$']
-    elif 'SensorNet' in env:
-        y_name = [r'$p_x$',  r'$p_y$', r'$\dot{p}_x$' , r'$\dot{p}_y$']
-    elif 'Vehicle' in env:
-        y_name = [r'$\delta$',  r'$\Omega$']
-    elif 'Localization' in env:
-        y_name = [r'$p_x$', r'$p_y$', r'$\phi$']
-    elif 'Attitude' in env:
-        y_name = ['Roll', 'Pitch', 'Yaw']
-    else:
-        y_name = [r'$x_1$', r'$x_2$']
-
-    mc_index = 4
-    # Toy: Gaussian, beta:4   Laplace:
-    # Attitude: Gaussian
-    # Now wiener_json_data contains the JSON content, keyed by folder name
-    ekf_error = get_error('NANO')
-    mc, time_length, num_states = ekf_error.shape
-    time_length = 200
-    if 'Attitude' in env:
-        start_idx = 0
-    else:
-        start_idx = 0
-    # error_value = np.mean(ekf_error, axis=0)
-    error_value = ekf_error[mc_index]
+    error_value = nano_error[mc_index,:, :]
     max_error_value = np.max(error_value[20:], axis=0)
     min_error_value = np.min(error_value[20:], axis=0)
     
     pd_list = [[] for _ in range(num_states)]
-    for tmp in range(len(labels)):  #
+    for method_name in method_names:  #
         for i in range(num_states):  # x_dim
             # for j in range(mc):  # mc
             pd_list[i].append(pd.DataFrame(
-                            {'Error': get_error(labels[tmp])[mc_index, :time_length, i],
-                            'Algorithm': labels[tmp],
-                            'Step': np.arange(start_idx, time_length),
-                            'Color': colors[tmp]
+                            {'Error': get_error(method_name, data_files)[mc_index, :time_length, i],
+                            'Algorithm': method_name,
+                            'Step': np.arange(0, time_length),
+                            'Color': colors[method_name]
                             }))
-    
-    for j in range(len(pd_list)):
-        if not pd_list[j]:
-            break
+     
+    for j in range(num_states):
         pd_error = pd.concat(pd_list[j])
         pd_error = pd_error.reset_index(drop=True)
 
         axes_pos = [0.2, 0.2, 0.6, 0.6]
-        palette = sns.color_palette(colors)
+        palette = sns.color_palette(colors.values())
         f1 = plt.figure(figsize=(16, 12), dpi=100)
         ax1 = f1.add_axes(axes_pos)
         g1 = sns.lineplot(x='Step', y="Error", hue="Algorithm", style="Algorithm", data=pd_error,
                           palette=palette, linewidth=4, dashes=False, legend=False)
-        ax1.set_ylabel(y_name[j]+' Error')
-        ax1.set_xlabel("Step")
-        plt.xlim(2, time_length)
+        
+        if language == 'English':
+            ax1.set_ylabel(y_name[j]+' Error')
+            ax1.set_xlabel("Step")
+        elif language == 'Chinese':
+            ax1.set_ylabel(y_name[j]+' 误差', fontproperties=simsun, fontsize=font_size)
+            ax1.set_xlabel("步数", fontproperties=simsun, fontsize=font_size)
+        
         if max_error_value[j] > 0:
             y_sup = 1.5 * max_error_value[j]
         else:
@@ -164,7 +146,7 @@ if __name__ == '__main__':
             y_inf = min_error_value / 2
 
         print(y_inf, y_sup)
-        # plt.ylim(-0.5, 0.5) # Laplace Attitude
+        plt.xlim(0, time_length)
         plt.ylim(y_inf, y_sup)
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.xticks()
@@ -182,18 +164,18 @@ if __name__ == '__main__':
         
         rmse_max = 0
         # 绘制每个算法的 RMSE 曲线
-        for filter_idx, filter_name in enumerate(labels):
+        for filter_idx, filter_name in enumerate(method_names):
             # 计算该算法的 RMSE
-            rmse = get_rms_error(filter_name, state_index)
+            rmse = get_rms_error(filter_name, state_index, data_files)
 
             this_rmse_max = np.max(rmse[-100:])
             if this_rmse_max > rmse_max:
                 rmse_max = this_rmse_max
 
             # 准备用于绘图的数据
-            steps = np.arange(start_idx, time_length)
+            steps = np.arange(0, time_length)
 
-            plt.plot(steps, rmse[:time_length], label=filter_name, color=colors[filter_idx], linewidth=4)
+            plt.plot(steps, rmse[:time_length], label=filter_name, color=colors[filter_name], linewidth=4)
 
         plt.xlabel("Step")
         plt.ylabel(y_name[state_index] + ' RMSE')
@@ -208,53 +190,64 @@ if __name__ == '__main__':
     '''
     4. State Curve Plot
     '''
-    state_labels = ['True', 'EKF', 'UKF', 'IEKF', 'PLF', 'NANO']
-    state_colors = ['C6'] + ['lightblue'] + ['C0'] + ['C1'] + ['C2'] + ['C3']
+    state_labels = ['True'] + method_names
+    state_colors = colors|{'True': 'Black'}
     
     pd_list = [[] for _ in range(num_states)]
-    nano_state = get_state('NANO')
-    true_state = np.mean(get_state('True'), axis=0)
+    
+    true_state = get_state('True', data_files)[mc_index]
     max_true_state = np.max(true_state[-100:], axis=0)
     min_true_state = np.min(true_state[-100:], axis=0)
 
-    for tmp in range(len(state_labels)):
+    for label in state_labels:
         for i in range(num_states):  # x_dim
             # for j in range(mc):  # mc
-            pd_list[i].append(pd.DataFrame({'State': get_state(state_labels[tmp])[mc_index, :time_length, i],
-                                            'Algorithm': state_labels[tmp],
-                                            'Step': np.arange(start_idx, time_length),
-                                            'Color': state_colors[tmp]
+            pd_list[i].append(pd.DataFrame({'State': get_state(label, data_files)[mc_index, :time_length, i],
+                                            'Algorithm': label,
+                                            'Step': np.arange(0, time_length),
+                                            'Color': state_colors[label]
                                             }))
 
     for j in range(len(pd_list)):
-        if not pd_list[j]:
-            break
         pd_state = pd.concat(pd_list[j])
         pd_state = pd_state.reset_index(drop=True)
 
         axes_pos = [0.2, 0.2, 0.6, 0.6]
-        palette = sns.color_palette(state_colors)
+        palette = sns.color_palette(state_colors.values())
         f1 = plt.figure(figsize=(16, 12), dpi=100)
         ax1 = f1.add_axes(axes_pos)
         g1 = sns.lineplot(x='Step', y="State", hue="Algorithm", style="Algorithm", data=pd_state,
                           palette=palette, linewidth=2, dashes=False, legend=False)
         ax1.set_ylabel(y_name[j])
-        ax1.set_xlabel("Step")
-        plt.xlim(2, time_length)
+        if language == 'English':
+            ax1.set_xlabel("Step")
+        elif language == 'Chinese':
+            ax1.set_xlabel("步数", fontproperties=simsun, fontsize=font_size)
+            
+        plt.xlim(0, time_length)
         plt.axhline(0, ls='-.', c='k', lw=1, alpha=0.5)
         plt.yticks()
         plt.xticks()
         plt.savefig('./figures/' + env + '/' + env + '_state_' + str(j+1) + '.pdf', bbox_inches='tight')
     
     
-    '''
-    5. Legend Plot
-    '''
-    linestyle = '-'
-    legend_elements = [Line2D([0], [0], color=colors[i], lw=4, 
-                        linestyle=linestyle, label=labels[i]) for i in range(len(labels))]
-    f2 = plt.figure(figsize=(8, 4), dpi=100)
-    ax2 = f2.add_axes([0, 0, 1, 1])
-    ax2.legend(handles=legend_elements, loc='center', ncol=3)
-    ax2.axis('off')
-    plt.savefig('./figures/legend.pdf', bbox_inches='tight')
+    # '''
+    # 5. Legend Plot
+    # '''
+    # linestyle = '-'
+    # legend_elements = [Line2D([0], [0], color=colors[i], lw=4, 
+    #                     linestyle=linestyle, label=labels[i]) for i in range(len(labels))]
+    # f2 = plt.figure(figsize=(8, 4), dpi=100)
+    # ax2 = f2.add_axes([0, 0, 1, 1])
+    # ax2.legend(handles=legend_elements, loc='center', ncol=3)
+    # ax2.axis('off')
+    # plt.savefig('./figures/legend.pdf', bbox_inches='tight')
+
+    # linestyle = '-'
+    # legend_elements = [Line2D([0], [0], color=colors[i], lw=4, 
+    #                     linestyle=linestyle, label=labels[i]) for i in range(len(labels))]
+    # f2 = plt.figure(figsize=(8, 4), dpi=100)
+    # ax2 = f2.add_axes([0, 0, 1, 1])
+    # ax2.legend(handles=legend_elements, loc='center', ncol=3)
+    # ax2.axis('off')
+    # plt.savefig('./figures/legend.pdf', bbox_inches='tight')
