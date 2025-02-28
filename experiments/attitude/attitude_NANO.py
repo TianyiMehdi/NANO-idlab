@@ -1,10 +1,10 @@
 import sys
 import argparse
-import autograd.numpy as np
+import numpy as np
 
 sys.path.append("./")
 from experiments.save_and_plot import save_per_exp
-from experiments.run import run_filter, run_filter_attitude
+from experiments.run import run_filter 
 
 if __name__ == "__main__":
     # Create the parser
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     roll_input = 10 * (np.pi/180) * np.sin(2 * np.pi * t * 0.05 / 5)
     yaw_input = 10 * (np.pi/180) * np.sin(2 * np.pi * t * 0.05 / 5)
     control_input = np.stack((pitch_input, roll_input, yaw_input), axis=1)
-    data_dict = run_filter_attitude(args_dict['N_exp'], args_dict['steps'], 
+    data_dict = run_filter(args_dict['N_exp'], args_dict['steps'], 
                            args_dict['model_name'], args_dict['noise_type'], 
                            args_dict['filter_name'], x_hat0, filter_dict,
                            control_input)

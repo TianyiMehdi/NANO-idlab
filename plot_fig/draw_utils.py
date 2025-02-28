@@ -46,3 +46,30 @@ def read_json_from_folders(base_path):
                         json_data[folder_name] = json.load(json_file)
 
     return json_data
+
+
+y_name_dict = {'Oscillator': [r'$x_1$', r'$x_2$'],
+               'Attitude': ['Roll', 'Pitch', 'Yaw'],
+               'Localization': [r'$p_x$', r'$p_y$', r'$\phi$'],
+               'SequenceForcasting': [r'$x_1$', r'$x_2$'],
+               'GrowthModel': [r'$x_1$', r'$x_2$', r'$x_3$']}
+
+def get_error(name, data_files):
+    error = data_files[name]['x_mc'] - data_files[name]['x_hat_mc']
+    return error
+
+def get_state(name, data_files):
+    if name == 'True':
+        return data_files['NANO']['x_mc']
+    else:
+        return data_files[name]['x_hat_mc']
+    
+def get_rms_error(name, state_index, data_files):
+    x_mc = data_files[name]['x_mc']
+    x_hat_mc = data_files[name]['x_hat_mc']
+    rms_error = np.sqrt(np.mean((x_mc[:, :, state_index] - x_hat_mc[:, :, state_index])**2, axis=0))
+    return rms_error
+
+def calculate_rmse(x_mc, x_hat_mc):
+    rmse = np.sqrt(np.mean((x_mc - x_hat_mc)**2, axis=(1, 2))) 
+    return rmse

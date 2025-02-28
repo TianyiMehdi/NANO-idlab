@@ -1,0 +1,15 @@
+{
+    "filter_name": "KF",
+    "model_name": "Oscillator",
+    "noise_type": "Beta",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.15997158765710418,
+        0.13205343641647332
+    ],
+    "time": 0.0001403775047417262,
+    "current_time": "2025-02-28-16-39"
+}
