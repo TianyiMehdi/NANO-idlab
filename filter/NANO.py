@@ -151,7 +151,9 @@ class NANO:
             P = np.linalg.inv(P_inv)
             is_positive_semidefinite(P)
 
-            E_hessian = cal_mean(lambda x : self.jac_h(x).T @ np.linalg.inv(self.R) @ self.jac_h(x), x_hat, P, self.points)
+            E_hessian = cal_mean(lambda x : self.jac_h(x).T @ np.linalg.inv(self.R) 
+                                #  @ (y - self.h(x))[:, np.newaxis] @ (y - self.h(x))[np.newaxis, :] 
+                                 @ self.jac_h(x), x_hat, P, self.points)
             P_inv_next = P_inv_prior + lr * E_hessian
             P_next = np.linalg.inv(P_inv_next)
             x_hat_next = x_hat - lr*(P_next @ P_inv @ cal_mean(lambda x: (x - x_hat) * self.loss_func(x, y), x_hat, P, self.points) + P_next @ P_inv_prior @ (x_hat - x_hat_prior))
@@ -164,9 +166,6 @@ class NANO:
 
             P_inv = P_inv_next.copy()
             x_hat = x_hat_next.copy()
-        
-        # if self.model_name == 'Attitude':
-        #     x_hat = x_hat / np.linalg.norm(x_hat)
             
         self.x = x_hat
         self.P = np.linalg.inv(P_inv)

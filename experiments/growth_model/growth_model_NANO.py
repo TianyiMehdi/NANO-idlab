@@ -26,8 +26,8 @@ if __name__ == "__main__":
     parser_filter = argparse.ArgumentParser(description="filter_parameters")
     parser_filter.add_argument("--n_iterations", default=1, type=int, help="Iterations for NANO")
     parser_filter.add_argument("--lr", default=0.1, type=float, help="Learning Rate for NANO")
-    parser_filter.add_argument("--init_type", default='iekf', type=str, help="Initialization type for Natural Gradient iteration, 'prior', 'laplace', 'iekf', 'ukf'")
-    # Gaussian, 1, 0.1 'iekf' 
+    parser_filter.add_argument("--init_type", default='prior', type=str, help="Initialization type for Natural Gradient iteration, 'prior', 'laplace', 'iekf', 'ukf'")
+    # Gaussian, 1, 0.1 'iekf', 'prior'
     # Laplace : 1, 0.1 'ukf'     
     # Beta: 5, 0.5, 'iekf'
     
