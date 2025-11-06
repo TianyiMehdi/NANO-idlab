@@ -96,6 +96,14 @@ class NANO:
         P = P - np.dot(K, np.dot(S, K.T))
         # if self.model_name == 'Attitude':
         #     x = x / np.linalg.norm(x)
+
+        P = 0.5 * (P + P.T)
+        min_eig = np.min(np.real(np.linalg.eigvals(P)))
+        if min_eig < 0:
+            jitter = (abs(min_eig) + 1e-9)
+            P += jitter * np.eye(self.dim_x)
+        P += 1e-9 * np.eye(self.dim_x)
+
         return x, np.linalg.inv(P)
     
     def cross_variance(self, x, z, sigmas_f, sigmas_h):
@@ -144,6 +152,13 @@ class NANO:
             x_hat, P_inv = self.update_ukf_init(y, x_hat_prior, self.P.copy())
         else:
             raise ValueError
+        
+        if lr == 0 or n_iterations == 0:
+            self.x = x_hat
+            self.P = np.linalg.inv(P_inv)
+            self.x_post = self.x.copy()
+            self.P_post = self.P.copy()
+            return
         
         is_positive_semidefinite(P_inv)
 

@@ -1,0 +1,16 @@
+{
+    "filter_name": "UKF",
+    "model_name": "Lorenz",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.6059095930075507,
+        1.0579315085767171,
+        1.1995065248882977
+    ],
+    "time": 9.546704028719033e-05,
+    "current_time": "2025-11-06-15-52"
+}

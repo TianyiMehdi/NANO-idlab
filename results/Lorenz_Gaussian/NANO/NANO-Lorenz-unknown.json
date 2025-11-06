@@ -1,0 +1,19 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Lorenz",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.51946587928022,
+        0.95619365947298,
+        1.0036878262284998
+    ],
+    "time": 0.0004249497274657589,
+    "n_iterations": 1,
+    "lr": 1,
+    "init_type": "ukf",
+    "current_time": "2025-11-06-15-53"
+}

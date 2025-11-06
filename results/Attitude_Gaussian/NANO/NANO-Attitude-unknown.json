@@ -1,0 +1,19 @@
+{
+    "filter_name": "NANO",
+    "model_name": "Attitude",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.3563479024402452,
+        0.15645968340993804,
+        0.5951450303006685
+    ],
+    "time": 0.002864828876514531,
+    "n_iterations": 2,
+    "lr": 0.05,
+    "init_type": "prior",
+    "current_time": "2025-11-06-13-31"
+}

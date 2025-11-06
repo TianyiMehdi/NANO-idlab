@@ -1,0 +1,16 @@
+{
+    "filter_name": "EKF",
+    "model_name": "Lorenz",
+    "noise_type": "Gaussian",
+    "result_dir": null,
+    "random_seed": 42,
+    "N_exp": 50,
+    "steps": 200,
+    "x_rmse": [
+        0.7402683868354221,
+        1.2054268254192717,
+        1.4399679594051522
+    ],
+    "time": 3.116365653186587e-05,
+    "current_time": "2025-11-06-15-53"
+}
